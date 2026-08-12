@@ -24,3 +24,39 @@ high again when the buffer is about 30% full. Version 8.xx has about the same am
 characters, an `Xon` will be transmitted. Likewise, when the programmer is sending you data, you may send an XOFF character, which will stop the programmer from sending until it receives an Xon character. `Xon`’s and `Xoff`’s, are not put into the FIFO, but are processed as soon as they are re ceived. Even if you don’t use XON/XOFF handshaking, you will find it useful when using the L, list command, to stop and start the data flow to your screen. `Xon` and `Xoff` are the keyboard equivalents of `control-Q` and `control-S`. Version 8.xx does not send `Xon`/`Xoff`, but will accept it.
 
 4. Please note that the 7228 may communicate at many different baud rates. To initialize to a new baud rate, send a "break" signal to the programmer for more than 100 milliseconds, and then at least 5 milliseconds after you restore from the break, send an `80H` character at the baud rate you wish to begin sending. After that, a space command will cause the prompter to be reissued.
+
+### Programmer Interface
+
+The model 7228 has a DB25P connector configured as Data Terminal Equipment (DTE).
+
+Pin# Direction Function
+
+| Pin | Signal | Direction | Function / Notes |
+| --- | --- | --- | --- |
+| 1 | EG | <--> | Equipment Ground |
+| 2 | TXD | --> | Transmit Data |
+| 3 | RXD | <-- | Receive Data |
+| 4 | RTS | --> | Request To Send. Always active when power is on. |
+| 5 | CTS | <-- | Clear To Send. High enables 7228 to transmit data. Pulled high internally. |
+| 6 | DSR | <-- | Data Set Ready. Not used. |
+| 7 | SG | <--> | Signal Ground |
+| 20 | DTR | --> | Data Terminal Ready. High when programmer willing to accept data. |
+
+### Making the cable
+
+AT DB9 (male) to 7228 DB25 (female)
+| AT Signal | AT Pin | 7228 Pin | 7228 Signal |
+| --- | --- | --- | --- |
+| CD | 1 | 8 | CD |
+| RXD | 2 | 2 | TXD |
+| TXD | 3 | 3 | RXD |
+| DTR | 4 | 5 | CTS |
+| SG | 5 | 7 | SG |
+| DSR | 6 | 4 | RTS |
+| RTS | 7 | 6 | DSR |
+| CTS | 8 | 20 | DTR |
+| RD | 9 | NC | NC |
+
+#### Cold links
+
+ftp://ftp.gtek.com/pub/linux/linux.tar.gz
