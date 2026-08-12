@@ -1,10 +1,19 @@
 ## GTEK-7228
 
-Documentation and operation experience
+The “GTEK 7228” is a vintage EPROM/ROM programmer—i.e., a bench device used by hobbyists/technicians to program erasable memory chips in the pre-flash era - such as 27C-series EPROMs. It’s typically operated over a serial connection using a simple command/menu interface, where you select the EPROM type/device from a prompt and then send read/write commands in standard text formats like Intel HEX or Motorola S-Record.
 
 _Background_
 
-Manufactured between 1983 and 
+Manufactured between 1983 and 1997, one of the best ROM writers/readers that have _ever_ been made. The company bio is:
+
+```
+Over 28 years of leadership providing solutions for Industrial Electronics and Communications Hardware and Software Development, Worldwide.
+
+KATRINA NOTICE - Gtek and its facility were severely damaged by Hurricane Katrina on 29 August 2005. As of 1 February 2010, no manufacturing has taken place since Katrina, nor is any expected to in the future. 
+```
+Documentation and operation experience - here lies my journey. The comms are silent.
+
+![7228](/images/7228-1.jpg)
 
 ### Interfacing
 
