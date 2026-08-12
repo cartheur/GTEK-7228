@@ -13,6 +13,8 @@ KATRINA NOTICE - Gtek and its facility were severely damaged by Hurricane Katrin
 ```
 Documentation and operation experience - here lies my journey. The comms are silent.
 
+Additional serial adapter and USB-TTL wiring guidance is in [docs/serial-adapter-guide.md](docs/serial-adapter-guide.md).
+
 ![7228](/images/7228-1-mini.jpg)
 
 ### Interfacing
