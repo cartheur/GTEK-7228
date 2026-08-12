@@ -13,7 +13,7 @@ KATRINA NOTICE - Gtek and its facility were severely damaged by Hurricane Katrin
 ```
 Documentation and operation experience - here lies my journey. The comms are silent.
 
-![7228](/images/7228-1.jpg)
+![7228](/images/7228-1-mini.jpg)
 
 ### Interfacing
 
