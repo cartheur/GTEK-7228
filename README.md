@@ -23,7 +23,7 @@ The Model 7228 is surprisingly easy to interface and there are several methods o
 1. Software handshake. This is perhaps the easiest method of all. When you begin to send data to be programmed, send the first byte but don’t wait for it to be echoed. That would effectively cut
 your communication rate in half. Instead, send the second byte, receive the first, send the third byte, receive the second, etc. This technique will allow you to program as fast as the algorithm in use permits. Some devices program faster, some slower! See figure 4.1 for flowchart.
 
-![fig.4.1](/images/fig.4.jpg)
+![fig.4.1](/images/fig.4-mini.jpg)
 
 2. CTS/DTR hardware handshaking. The Model 7228 is configured as data terminal equipment, which means that the CTS (clear to send) line is an input to the programmmer which when pulled low
 forces the programmer to stop sending. On the other hand, the DTR (data terminal ready) line is an output from the programmer. Version 7.xx DTR will go low when the buffer is about 50% full and
