@@ -1,6 +1,6 @@
 # GTEK 7228 Serial Adapter Guide
 
-This note collects the practical hardware details for connecting a modern USB serial adapter to the GTEK 7228 programmer.
+This note collects the practical hardware details for connecting a modern USB serial adapter to the GTEK 7228 programmer. For the current experimental work in this repo, assume a `MAX232`-based interface is the default DIY path unless noted otherwise.
 
 ## Summary
 
@@ -11,6 +11,10 @@ That means:
 - A `USB-to-TTL UART` adapter does **not** connect directly to the programmer.
 - A `USB-to-RS232` adapter can connect with the proper cable pinout.
 - A `USB-to-TTL UART` adapter can still be used if it is followed by an `RS-232 transceiver` such as a `MAX232`, `MAX233`, or `MAX3232`.
+
+For this project's hands-on experiments, the working assumption is:
+
+`PC -> USB TTL UART -> MAX232 -> GTEK 7228`
 
 ## The Main Compatibility Rule
 
@@ -61,7 +65,7 @@ Correct signal chain:
 
 Examples of suitable transceivers:
 
-- `MAX232`
+- `MAX232` (`5V` logic-side supply, classic choice for this repo's experimental setup)
 - `MAX233`
 - `MAX3232`
 - compatible `TTL <-> RS-232` modules
@@ -145,7 +149,13 @@ If the 7228 is at an unknown baud rate, the documented reinitialization method i
 
 ## DIY Circuit with a MAX232
 
-If you are building from parts, a `MAX232` is a standard solution.
+If you are building from parts, a `MAX232` is the primary documented solution for the current experimental work.
+
+Important practical note:
+
+- A classic `MAX232` is normally a `5V` part.
+- It needs the charge-pump capacitors shown in its datasheet.
+- If your USB UART only exposes `3.3V` logic, do not assume that is a drop-in match for a classic `MAX232` build without checking the exact module and transceiver variant.
 
 Typical parts:
 
@@ -168,6 +178,8 @@ RS-232 side:
 - `MAX232 T1OUT` -> 7228 `DB25 pin 3`
 - 7228 `DB25 pin 2` -> `MAX232 R1IN`
 - `GND` -> 7228 `DB25 pin 7`
+
+This `3-wire` arrangement is the baseline bring-up configuration for the `MAX232` experiment.
 
 ## DIY Circuit with a MAX233
 
