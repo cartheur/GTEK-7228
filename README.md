@@ -1,5 +1,11 @@
 ## GTEK-7228
 
+Run the Tcl/Tk terminal:
+
+```bash
+./terminal/gtek-terminal.tcl -device /dev/serial/by-id/usb-Prolific_Technology_Inc._USB-Serial_Controller_D-if00-port0
+```
+
 The “GTEK 7228” is a vintage EPROM/ROM programmer—i.e., a bench device used by hobbyists/technicians to program erasable memory chips in the pre-flash era - such as 27C-series EPROMs. It’s typically operated over a serial connection using a simple command/menu interface, where you select the EPROM type/device from a prompt and then send read/write commands in standard text formats like Intel HEX or Motorola S-Record.
 
 _Background_

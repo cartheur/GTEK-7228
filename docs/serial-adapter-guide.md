@@ -159,6 +159,34 @@ If your adapter and software support it, you can also wire:
 
 For early testing, it is reasonable to begin without these lines.
 
+### What CTS/DTR Is Doing Here
+
+In this setup, handshake is only flow control. It is not part of the command syntax.
+
+The practical idea is:
+
+- Debian sends command bytes and file data on `TXD`
+- the 7228 sends prompts, echoes, and status on `RXD`
+- the handshake lines tell the other side when to pause or resume
+
+For the 7228 specifically:
+
+- `DB25 pin 5` `CTS` is an input to the programmer
+- `DB25 pin 20` `DTR` is an output from the programmer
+
+That means:
+
+- if the host drives the 7228 `CTS` input appropriately, it can control whether the programmer is allowed to transmit
+- if the 7228 changes its `DTR` output, it is signaling its own receive/transmit readiness to the host-side flow-control wiring
+
+The exact reason to care is overruns. If data is sent faster than the 7228 can absorb it, you may see FIFO or stack-style communication errors.
+
+So the working order for this repo is:
+
+1. prove the link with `TXD`, `RXD`, and `GND`
+2. prefer `XON/XOFF` first
+3. add `CTS/DTR` only if the simple path is unstable or you need more reliable sustained transfers
+
 ## XON/XOFF and Software Handshaking
 
 The 7228 documentation also describes software flow control:
@@ -168,6 +196,19 @@ The 7228 documentation also describes software flow control:
 - this can be useful if hardware flow control is not wired
 
 For initial experiments, software flow control is often the easiest place to start.
+
+### What XON/XOFF Looks Like
+
+This is in-band flow control carried over the same serial data path:
+
+- `XOFF` means "pause sending to me"
+- `XON` means "resume sending to me"
+
+For first bring-up, this is attractive because:
+
+- no extra wires are required
+- the EM1016 cable can stay at `TXD/RXD/GND`
+- it matches the current default in `terminal/gtek-terminal.tcl`
 
 ## Baud Rate Recovery
 

@@ -97,6 +97,15 @@ The safest first-pass configuration is:
 - no hardware flow control at first
 - software flow control enabled
 
+That means we deliberately begin with:
+
+- `TXD`
+- `RXD`
+- `GND`
+- `XON/XOFF`
+
+and not with extra handshake wires.
+
 Use:
 
 ```bash
@@ -110,6 +119,8 @@ To force hardware flow control later:
 ```bash
 ./scripts/gtek-serial-setup.sh --hwflow /dev/ttyUSB0
 ```
+
+Use that only after the simpler 3-wire path is proven.
 
 ## 7. Capture output during power-up
 
