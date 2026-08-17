@@ -2,6 +2,8 @@
 
 This is the practical first-pass workflow for diagnosing a dusty GTEK 7228 on a modern Debian machine.
 
+For this repo's current bring-up plan, the preferred host adapter is the `Eminent EM1016 USB-to-RS232` device.
+
 Use this document when the goal is:
 
 - confirm the serial adapter and cable are electrically correct
@@ -29,16 +31,20 @@ Start with the simplest known-good wiring:
 - `RXD`
 - `GND`
 
-If you are using a TTL USB UART, it must go through an RS-232 transceiver first.
+If you have the `Eminent EM1016`, start there. It is the preferred path because it is already `RS-232`.
+
+If you are using a TTL USB UART instead, it must go through an RS-232 transceiver first.
 
 Allowed:
 
-- `USB-to-RS232` adapter with the correct cable
+- `Eminent EM1016 USB-to-RS232` adapter with the correct cable
+- another real `USB-to-RS232` adapter with the correct cable
 - `USB TTL UART -> MAX232/MAX233/MAX3232 -> GTEK 7228`
 
 Do not connect a TTL UART directly to the 7228 DB25 port.
 
 More wiring detail is in [serial-adapter-guide.md](/home/cartheur/ame/aiventure/aiventure-github/cartheur/GTEK-7228/docs/serial-adapter-guide.md).
+The preferred cable build is in [cable-build.md](/home/cartheur/ame/aiventure/aiventure-github/cartheur/GTEK-7228/docs/cable-build.md).
 
 ## 3. Debian host prerequisites
 
@@ -176,13 +182,14 @@ Output appears only briefly:
 
 Use this exact order:
 
-1. Verify the adapter path and cable wiring.
+1. Verify the EM1016 adapter path and cable wiring.
 2. Use a 3-wire connection first.
 3. Find the Debian serial device.
 4. Run `gtek-serial-setup.sh`.
 5. Capture while powering the 7228 on.
 6. If silent, run `gtek-baud-recover.py`.
 7. If still silent, revisit electrical assumptions before chasing software.
+8. Only then fall back to a TTL-plus-transceiver path if needed.
 
 ## 11. What this repo does not prove yet
 

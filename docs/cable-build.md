@@ -2,11 +2,13 @@
 
 This is the shortest path to a working cable between a modern Debian box and a GTEK 7228.
 
+For the current bring-up plan, the `Eminent EM1016` is the preferred adapter because it keeps the first cable purely `RS-232` and removes the need for a separate level-converter board.
+
 The rear-panel photo in [images/back.jpg](/home/cartheur/ame/aiventure/aiventure-github/cartheur/GTEK-7228/images/back.jpg) shows the connector that often gets mistaken for a parallel port. For first bring-up, treat it as a `DB25 RS-232 serial` connector and ignore the fact that many physical positions exist on the shell.
 
 ## Recommended approach
 
-Use a real `USB-to-RS232` adapter if you can. It is the simplest and least error-prone path.
+Use the `Eminent EM1016 USB-to-RS232` adapter if you can. It is the simplest and least error-prone path for this repo.
 
 If you only have a `USB-to-TTL UART`, you must add an `RS-232` transceiver stage such as:
 
@@ -16,22 +18,23 @@ If you only have a `USB-to-TTL UART`, you must add an `RS-232` transceiver stage
 
 Do not connect a TTL serial adapter directly to the 7228 DB25 port.
 
-## Option A: simplest cable
+## Option A: preferred cable with the EM1016
 
 Recommended parts:
 
 - `1x` Debian box with `USB`
-- `1x` real `USB-to-RS232` adapter
+- `1x` `Eminent EM1016` USB-to-RS232 adapter
+- `1x` `DB9 female` connector for the EM1016 side
 - `1x` `DB25 female` connector for the 7228 side
 - cable, hood, solder cups, heatshrink
 
-### Finished wiring map: USB-RS232 DB9 to 7228 DB25
+### Finished wiring map: EM1016 DB9 to 7228 DB25
 
-This is the cleanest first cable if your USB serial adapter ends in a standard PC-style `DB9 male`.
+This is the cleanest first cable because the EM1016 ends in a standard PC-style `DB9 male`.
 
 Build this exact cable first:
 
-| USB-RS232 adapter `DB9 male` | 7228 `DB25 female` | Purpose |
+| EM1016 `DB9 male` | 7228 `DB25 female` | Purpose |
 | --- | --- | --- |
 | pin `2` `RXD` | pin `2` `TXD` | receive data from the 7228 |
 | pin `3` `TXD` | pin `3` `RXD` | send data to the 7228 |
@@ -53,7 +56,7 @@ Those three pins are the only ones you need to prove first contact.
 
 Everything else can be left unconnected for the first pass.
 
-If your adapter presents a `DB9` male PC-style serial connector, the usual mapping is:
+The EM1016 presents a `DB9` male PC-style serial connector, so the usual mapping is:
 
 | DB9 male | 7228 DB25 female | Meaning |
 | --- | --- | --- |
@@ -70,9 +73,9 @@ Only add these after the 3-wire cable works.
 | `DTR` | pin `5` | drives 7228 `CTS` |
 | `CTS` | pin `20` | reads 7228 `DTR` |
 
-If your adapter is a standard `DB9 male`, that usually means:
+With the EM1016 `DB9 male`, optional hardware flow control usually means:
 
-| USB-RS232 adapter `DB9 male` | 7228 `DB25 female` | Purpose |
+| EM1016 `DB9 male` | 7228 `DB25 female` | Purpose |
 | --- | --- | --- |
 | pin `4` `DTR` | pin `5` `CTS` | optional host-to-7228 flow control |
 | pin `8` `CTS` | pin `20` `DTR` | optional 7228-to-host flow control |
@@ -87,7 +90,7 @@ For clarity, that means the first useful pins on the 7228 side are:
 
 All other DB25 positions can be ignored unless later testing proves you need them.
 
-## Option B: TTL adapter plus transceiver
+## Option B: fallback TTL adapter plus transceiver
 
 Recommended parts:
 
@@ -206,5 +209,5 @@ The TTL-plus-transceiver path is valid, but it should be plan B, not plan A.
 
 If you are deciding what to fabricate today:
 
-1. Build `USB-RS232 DB9 male -> 7228 DB25 female` first if you have the adapter.
+1. Build `EM1016 DB9 male -> 7228 DB25 female` first if you have the adapter.
 2. Build `SH-U09C5 -> MAX233 -> 7228 DB25 female` only if a real USB-RS232 adapter is not available.
