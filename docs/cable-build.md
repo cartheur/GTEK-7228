@@ -25,6 +25,20 @@ Recommended parts:
 - `1x` `DB25 female` connector for the 7228 side
 - cable, hood, solder cups, heatshrink
 
+### Finished wiring map: USB-RS232 DB9 to 7228 DB25
+
+This is the cleanest first cable if your USB serial adapter ends in a standard PC-style `DB9 male`.
+
+Build this exact cable first:
+
+| USB-RS232 adapter `DB9 male` | 7228 `DB25 female` | Purpose |
+| --- | --- | --- |
+| pin `2` `RXD` | pin `2` `TXD` | receive data from the 7228 |
+| pin `3` `TXD` | pin `3` `RXD` | send data to the 7228 |
+| pin `5` `GND` | pin `7` `SG` | signal ground |
+
+Leave the other pins open for the first pass.
+
 ### Minimal 3-wire pinout
 
 This is the best first-pass cable for bring-up.
@@ -56,6 +70,13 @@ Only add these after the 3-wire cable works.
 | `DTR` | pin `5` | drives 7228 `CTS` |
 | `CTS` | pin `20` | reads 7228 `DTR` |
 
+If your adapter is a standard `DB9 male`, that usually means:
+
+| USB-RS232 adapter `DB9 male` | 7228 `DB25 female` | Purpose |
+| --- | --- | --- |
+| pin `4` `DTR` | pin `5` `CTS` | optional host-to-7228 flow control |
+| pin `8` `CTS` | pin `20` `DTR` | optional 7228-to-host flow control |
+
 For clarity, that means the first useful pins on the 7228 side are:
 
 - pin `2` = data out of the 7228
@@ -74,6 +95,8 @@ Recommended parts:
 - `1x` `MAX232`, `MAX233`, or `MAX3232`
 - `1x` `DB25 female` connector
 - perfboard or module wiring
+
+If your TTL adapter is the `DSD TECH SH-U09C5` already mentioned elsewhere in this repo, use the exact map below.
 
 Minimal signal chain:
 
@@ -94,6 +117,35 @@ RS-232 side:
 - transceiver `GND` -> 7228 DB25 pin `7`
 
 If you are using a classic `MAX232`, remember it normally needs the charge-pump capacitors from the datasheet.
+
+### Finished wiring map: SH-U09C5 to MAX233 to 7228 DB25
+
+This is the exact build if you are using the `SH-U09C5` plus a `MAX233`.
+
+| From | To | Purpose |
+| --- | --- | --- |
+| `SH-U09C5 TXD` | `MAX233 pin 2` `T1IN` | TTL transmit into the transceiver |
+| `SH-U09C5 RXD` | `MAX233 pin 3` `R1OUT` | TTL receive from the transceiver |
+| `SH-U09C5 GND` | `MAX233 pin 6` `GND` | common ground |
+| `SH-U09C5 5V` | `MAX233 pin 7` `VCC` | power the transceiver |
+| `MAX233 pin 5` `T1OUT` | 7228 `DB25 pin 3` `RXD` | RS-232 transmit into the 7228 |
+| 7228 `DB25 pin 2` `TXD` | `MAX233 pin 4` `R1IN` | RS-232 receive from the 7228 |
+| 7228 `DB25 pin 7` `SG` | `MAX233 pin 6` `GND` | common ground |
+
+That is enough for first contact.
+
+Do not add handshake wiring until this 3-wire path works.
+
+### Optional handshake map: SH-U09C5 to MAX233 to 7228 DB25
+
+Only if your adapter exposes usable control pins and you actually need them later:
+
+| From | To | Purpose |
+| --- | --- | --- |
+| host-side `DTR` | `MAX233 pin 1` `T2IN` | optional TTL-side control input |
+| `MAX233 pin 18` `T2OUT` | 7228 `DB25 pin 5` `CTS` | optional RS-232 control to the 7228 |
+| 7228 `DB25 pin 20` `DTR` | `MAX233 pin 19` `R2IN` | optional RS-232 control from the 7228 |
+| `MAX233 pin 20` `R2OUT` | host-side `CTS` | optional TTL-side control back to the host |
 
 ## Parts checklist
 
@@ -149,3 +201,10 @@ It removes the biggest source of avoidable mistakes:
 - extra transceiver wiring errors
 
 The TTL-plus-transceiver path is valid, but it should be plan B, not plan A.
+
+## Build choice
+
+If you are deciding what to fabricate today:
+
+1. Build `USB-RS232 DB9 male -> 7228 DB25 female` first if you have the adapter.
+2. Build `SH-U09C5 -> MAX233 -> 7228 DB25 female` only if a real USB-RS232 adapter is not available.

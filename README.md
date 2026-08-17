@@ -19,6 +19,8 @@ For first-time diagnosis and serial bring-up on a modern Debian machine, start w
 
 If you need to fabricate the physical link first, use [docs/cable-build.md](docs/cable-build.md) for the shortest cable path and exact first-pass pinout.
 
+That cable note now includes finished end-to-end wiring maps for both `USB-RS232 DB9 -> 7228 DB25` and `SH-U09C5 -> MAX233 -> 7228 DB25`.
+
 ![7228](/images/7228-1-mini.jpg)
 
 ### Interfacing
