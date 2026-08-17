@@ -27,6 +27,8 @@ A `DB25` connector does **not** automatically mean parallel port, and it does **
 
 ## GTEK 7228 Programmer Port
 
+The rear-panel connector visible in [images/back.jpg](/home/cartheur/ame/aiventure/aiventure-github/cartheur/GTEK-7228/images/back.jpg) is physically a `DB25`, but for first bring-up only a few serial pins matter. Do not assume every visible position is used.
+
 From the programmer interface documentation in the repo:
 
 | Pin | Signal | Direction | Notes |

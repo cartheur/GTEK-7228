@@ -15,6 +15,10 @@ Documentation and operation experience - here lies my journey. The comms are sil
 
 Additional serial adapter and USB-TTL wiring guidance is in [docs/serial-adapter-guide.md](docs/serial-adapter-guide.md). For the current experimental setup, the documented `USB-to-TTL UART -> MAX232 -> GTEK 7228` path is the intended hardware approach.
 
+For first-time diagnosis and serial bring-up on a modern Debian machine, start with [docs/first-bringup-debian.md](docs/first-bringup-debian.md). That guide uses the local helper scripts in `scripts/` and is the quickest path to first contact with a dusty unit.
+
+If you need to fabricate the physical link first, use [docs/cable-build.md](docs/cable-build.md) for the shortest cable path and exact first-pass pinout.
+
 ![7228](/images/7228-1-mini.jpg)
 
 ### Interfacing
