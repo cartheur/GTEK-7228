@@ -58,6 +58,8 @@ This workflow uses only standard local tools:
 
 You do not need `minicom`, `picocom`, or `pyserial` for the first pass in this repo.
 
+For a richer future interactive interface, this repo also includes `terminal/gtek-terminal.tcl`, which uses the system `wish` Tcl/Tk runtime.
+
 ## 4. Find the serial device
 
 Plug in the adapter, then check:
@@ -149,6 +151,29 @@ To try another baud:
 ```bash
 ./scripts/gtek-baud-recover.py --baud 9600 /dev/ttyUSB0
 ```
+
+## 8a. Interactive terminal option
+
+Once the serial path is stable, you can also use the Tcl/Tk terminal in this repo:
+
+```bash
+./terminal/gtek-terminal.tcl
+```
+
+Or specify the exact device explicitly:
+
+```bash
+./terminal/gtek-terminal.tcl -device /dev/serial/by-id/usb-Prolific_Technology_Inc._USB-Serial_Controller_D-if00-port0
+```
+
+The script defaults to:
+
+- `19200`
+- `8n1`
+- `xonxoff`
+- EM1016-style `/dev/serial/by-id/...` naming
+
+It is intended for stable interactive use after first contact is proven.
 
 ## 9. Interpreting first results
 

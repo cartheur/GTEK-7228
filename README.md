@@ -17,6 +17,8 @@ Additional serial adapter guidance is in [docs/serial-adapter-guide.md](docs/ser
 
 For first-time diagnosis and serial bring-up on a modern Debian machine, start with [docs/first-bringup-debian.md](docs/first-bringup-debian.md). That guide uses the local helper scripts in `scripts/` and is the quickest path to first contact with a dusty unit.
 
+For a future stable interactive serial interface on Debian, there is also a Tcl/Tk terminal at `terminal/gtek-terminal.tcl` with EM1016-friendly defaults.
+
 If you need to fabricate the physical link first, use [docs/cable-build.md](docs/cable-build.md) for the EM1016-first cable path and exact first-pass pinout.
 
 That cable note now includes finished end-to-end wiring maps for both `EM1016 DB9 -> 7228 DB25` and `SH-U09C5 -> MAX233 -> 7228 DB25`.

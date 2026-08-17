@@ -65,6 +65,10 @@ The official local adapter document for this path is:
 
 - `docs/EM1016-datasheet.pdf`
 
+For a future interactive software interface on Debian, this repo also includes:
+
+- `terminal/gtek-terminal.tcl`
+
 ## Using a Generic USB-to-RS232 Adapter
 
 This is the simplest modern solution.
