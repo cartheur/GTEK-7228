@@ -42,6 +42,7 @@ Allowed:
 - `USB TTL UART -> MAX232/MAX233/MAX3232 -> GTEK 7228`
 
 Do not connect a TTL UART directly to the 7228 DB25 port.
+Do not use a `USB-parallel` adapter here either, even if it has a similar connector shell.
 
 More wiring detail is in [serial-adapter-guide.md](/home/cartheur/ame/aiventure/aiventure-github/cartheur/GTEK-7228/docs/serial-adapter-guide.md).
 The preferred cable build is in [cable-build.md](/home/cartheur/ame/aiventure/aiventure-github/cartheur/GTEK-7228/docs/cable-build.md).

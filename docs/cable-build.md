@@ -10,6 +10,8 @@ The rear-panel photo in [images/back.jpg](/home/cartheur/ame/aiventure/aiventure
 
 Use the `Eminent EM1016 USB-to-RS232` adapter if you can. It is the simplest and least error-prone path for this repo.
 
+Do not substitute a `USB-parallel` adapter here. During this project, an `Axago` adapter enumerated on Debian as `067b:2305 Prolific Technology, Inc. PL2305 Parallel Port`, which confirms that it is a parallel interface and not suitable for the 7228 serial connection.
+
 If you only have a `USB-to-TTL UART`, you must add an `RS-232` transceiver stage such as:
 
 - `MAX232`
@@ -17,6 +19,8 @@ If you only have a `USB-to-TTL UART`, you must add an `RS-232` transceiver stage
 - `MAX3232`
 
 Do not connect a TTL serial adapter directly to the 7228 DB25 port.
+
+Do not use a `PL2305`-class USB-parallel adapter for this job either.
 
 ## Option A: preferred cable with the EM1016
 

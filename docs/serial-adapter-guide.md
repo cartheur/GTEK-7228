@@ -18,6 +18,8 @@ For this project's hands-on experiments, the preferred assumption is:
 
 The TTL-plus-transceiver path remains valid, but it is now the fallback path rather than the default.
 
+One specific trap that already came up during this project: a `USB-parallel` adapter is not a substitute for the 7228 serial link. On August 18, 2026, an `Axago` adapter attached to the Debian host enumerated in `lsusb` as `067b:2305 Prolific Technology, Inc. PL2305 Parallel Port`, which confirms that it is a parallel device, not a serial `RS-232` interface.
+
 ## The Main Compatibility Rule
 
 The important distinction is not the connector shell. It is the signaling standard.
@@ -26,6 +28,8 @@ The important distinction is not the connector shell. It is the signaling standa
 - `RS-232`: serial signaling with different voltage levels and polarity
 
 A `DB25` connector does **not** automatically mean parallel port, and it does **not** automatically mean TTL serial. On the 7228, the `DB25` is used for an `RS-232` serial port.
+
+That means a `USB-parallel` adapter with a DB-style connector is still the wrong tool here, even if the shell shape looks superficially similar.
 
 ## GTEK 7228 Programmer Port
 
