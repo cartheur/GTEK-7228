@@ -21,6 +21,8 @@ Documentation and operation experience - here lies my journey. The comms are sil
 
 For first-time diagnosis and serial bring-up on a modern Debian machine, start with [docs/first-bringup-debian.md](docs/first-bringup-debian.md). That guide uses the local helper scripts in `scripts/` and is the quickest path to first contact with a dusty unit.
 
+For the first successful power-supply recovery measurements, including the fuse replacement, transformer readings, and variac notes from August 18, 2026, see [docs/power-diagnostics-2026-08-18.md](docs/power-diagnostics-2026-08-18.md).
+
 For a future stable interactive serial interface on Debian, there is also a Tcl/Tk terminal at `terminal/gtek-terminal.tcl` with EM1016-friendly defaults.
 
 If you need to fabricate the physical link first, use [docs/cable-build.md](docs/cable-build.md) for the EM1016-first cable path and exact first-pass pinout.
