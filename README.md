@@ -19,10 +19,6 @@ KATRINA NOTICE - Gtek and its facility were severely damaged by Hurricane Katrin
 ```
 Documentation and operation experience - here lies my journey. The comms are silent.
 
-Additional serial adapter guidance is in [docs/serial-adapter-guide.md](docs/serial-adapter-guide.md). For the current bring-up plan, the preferred hardware path is `Debian box -> Eminent EM1016 USB-to-RS232 adapter -> 7228`.
-
-<img src="/images/EM1016.png" alt="Eminent EM1016 USB-to-RS232 adapter" width="220" />
-
 For first-time diagnosis and serial bring-up on a modern Debian machine, start with [docs/first-bringup-debian.md](docs/first-bringup-debian.md). That guide uses the local helper scripts in `scripts/` and is the quickest path to first contact with a dusty unit.
 
 For a future stable interactive serial interface on Debian, there is also a Tcl/Tk terminal at `terminal/gtek-terminal.tcl` with EM1016-friendly defaults.
@@ -83,6 +79,12 @@ AT DB9 (male) to 7228 DB25 (female)
 | RTS | 7 | 6 | DSR |
 | CTS | 8 | 20 | DTR |
 | RD | 9 | NC | NC |
+
+### Communication simplification
+
+Additional serial adapter guidance is in [docs/serial-adapter-guide.md](docs/serial-adapter-guide.md). For the current bring-up plan, the preferred hardware path is `Debian box -> Eminent EM1016 USB-to-RS232 adapter -> 7228`.
+
+<img src="/images/EM1016.png" alt="Eminent EM1016 USB-to-RS232 adapter" width="220" />
 
 #### Cold links
 
