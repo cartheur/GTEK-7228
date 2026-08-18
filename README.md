@@ -21,6 +21,8 @@ Documentation and operation experience - here lies my journey. The comms are sil
 
 Additional serial adapter guidance is in [docs/serial-adapter-guide.md](docs/serial-adapter-guide.md). For the current bring-up plan, the preferred hardware path is `Debian box -> Eminent EM1016 USB-to-RS232 adapter -> 7228`.
 
+<img src="/images/EM1016.png" alt="Eminent EM1016 USB-to-RS232 adapter" width="220" />
+
 For first-time diagnosis and serial bring-up on a modern Debian machine, start with [docs/first-bringup-debian.md](docs/first-bringup-debian.md). That guide uses the local helper scripts in `scripts/` and is the quickest path to first contact with a dusty unit.
 
 For a future stable interactive serial interface on Debian, there is also a Tcl/Tk terminal at `terminal/gtek-terminal.tcl` with EM1016-friendly defaults.
