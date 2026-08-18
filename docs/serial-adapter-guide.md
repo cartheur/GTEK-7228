@@ -1,6 +1,6 @@
 # GTEK 7228 Serial Adapter Guide
 
-This note collects the practical hardware details for connecting a modern USB serial adapter to the GTEK 7228 programmer.
+This note collects the practical hardware details for connecting a modern USB serial adapter to the GTEK 7228 programmer. For the current bring-up work in this repo, assume the `Eminent EM1016 USB-to-RS232` adapter is the preferred path unless noted otherwise.
 
 ## Summary
 
@@ -12,6 +12,14 @@ That means:
 - A `USB-to-RS232` adapter can connect with the proper cable pinout.
 - A `USB-to-TTL UART` adapter can still be used if it is followed by an `RS-232 transceiver` such as a `MAX232`, `MAX233`, or `MAX3232`.
 
+For this project's hands-on experiments, the preferred assumption is:
+
+`PC -> EM1016 USB-to-RS232 -> GTEK 7228`
+
+The TTL-plus-transceiver path remains valid, but it is now the fallback path rather than the default.
+
+One specific trap that already came up during this project: a `USB-parallel` adapter is not a substitute for the 7228 serial link. On August 18, 2026, an `Axago` adapter attached to the Debian host enumerated in `lsusb` as `067b:2305 Prolific Technology, Inc. PL2305 Parallel Port`, which confirms that it is a parallel device, not a serial `RS-232` interface.
+
 ## The Main Compatibility Rule
 
 The important distinction is not the connector shell. It is the signaling standard.
@@ -21,7 +29,11 @@ The important distinction is not the connector shell. It is the signaling standa
 
 A `DB25` connector does **not** automatically mean parallel port, and it does **not** automatically mean TTL serial. On the 7228, the `DB25` is used for an `RS-232` serial port.
 
+That means a `USB-parallel` adapter with a DB-style connector is still the wrong tool here, even if the shell shape looks superficially similar.
+
 ## GTEK 7228 Programmer Port
+
+The rear-panel connector visible in [images/back.jpg](/home/cartheur/ame/aiventure/aiventure-github/cartheur/GTEK-7228/images/back.jpg) is physically a `DB25`, but for first bring-up only a few serial pins matter. Do not assume every visible position is used.
 
 From the programmer interface documentation in the repo:
 
@@ -36,7 +48,32 @@ From the programmer interface documentation in the repo:
 | 7 | SG | <--> | Signal ground |
 | 20 | DTR | --> | High when programmer is willing to accept data |
 
-## Using a USB-to-RS232 Adapter
+## Using the EM1016 USB-to-RS232 Adapter
+
+This is the preferred modern solution for this repo.
+
+The `Eminent EM1016` simplifies first bring-up because it already presents an `RS-232` interface, so no `MAX232` or `MAX233` conversion stage is needed.
+
+Use it with a small `DB9 female -> DB25 female` cable wired like a PC serial port:
+
+- host `RXD` <- 7228 `TXD` (`DB25 pin 2`)
+- host `TXD` -> 7228 `RXD` (`DB25 pin 3`)
+- host `GND` -> 7228 `SG` (`DB25 pin 7`)
+
+Optional hardware flow control:
+
+- host `CTS` <- 7228 `DTR` (`DB25 pin 20`)
+- host `DTR` -> 7228 `CTS` (`DB25 pin 5`)
+
+The official local adapter document for this path is:
+
+- `docs/EM1016-datasheet.pdf`
+
+For a future interactive software interface on Debian, this repo also includes:
+
+- `terminal/gtek-terminal.tcl`
+
+## Using a Generic USB-to-RS232 Adapter
 
 This is the simplest modern solution.
 
@@ -55,13 +92,15 @@ Optional hardware flow control:
 
 This is possible, but only if you add an `RS-232` transceiver stage.
 
+Treat this as the fallback path if the EM1016 path is not available.
+
 Correct signal chain:
 
 `PC -> USB TTL UART -> RS-232 transceiver -> GTEK 7228`
 
 Examples of suitable transceivers:
 
-- `MAX232`
+- `MAX232` (`5V` logic-side supply, classic choice for this repo's experimental setup)
 - `MAX233`
 - `MAX3232`
 - compatible `TTL <-> RS-232` modules
@@ -124,6 +163,34 @@ If your adapter and software support it, you can also wire:
 
 For early testing, it is reasonable to begin without these lines.
 
+### What CTS/DTR Is Doing Here
+
+In this setup, handshake is only flow control. It is not part of the command syntax.
+
+The practical idea is:
+
+- Debian sends command bytes and file data on `TXD`
+- the 7228 sends prompts, echoes, and status on `RXD`
+- the handshake lines tell the other side when to pause or resume
+
+For the 7228 specifically:
+
+- `DB25 pin 5` `CTS` is an input to the programmer
+- `DB25 pin 20` `DTR` is an output from the programmer
+
+That means:
+
+- if the host drives the 7228 `CTS` input appropriately, it can control whether the programmer is allowed to transmit
+- if the 7228 changes its `DTR` output, it is signaling its own receive/transmit readiness to the host-side flow-control wiring
+
+The exact reason to care is overruns. If data is sent faster than the 7228 can absorb it, you may see FIFO or stack-style communication errors.
+
+So the working order for this repo is:
+
+1. prove the link with `TXD`, `RXD`, and `GND`
+2. prefer `XON/XOFF` first
+3. add `CTS/DTR` only if the simple path is unstable or you need more reliable sustained transfers
+
 ## XON/XOFF and Software Handshaking
 
 The 7228 documentation also describes software flow control:
@@ -133,6 +200,19 @@ The 7228 documentation also describes software flow control:
 - this can be useful if hardware flow control is not wired
 
 For initial experiments, software flow control is often the easiest place to start.
+
+### What XON/XOFF Looks Like
+
+This is in-band flow control carried over the same serial data path:
+
+- `XOFF` means "pause sending to me"
+- `XON` means "resume sending to me"
+
+For first bring-up, this is attractive because:
+
+- no extra wires are required
+- the EM1016 cable can stay at `TXD/RXD/GND`
+- it matches the current default in `terminal/gtek-terminal.tcl`
 
 ## Baud Rate Recovery
 
@@ -145,7 +225,13 @@ If the 7228 is at an unknown baud rate, the documented reinitialization method i
 
 ## DIY Circuit with a MAX232
 
-If you are building from parts, a `MAX232` is a standard solution.
+If you are building from parts, a `MAX232` is a valid fallback solution for the current experimental work.
+
+Important practical note:
+
+- A classic `MAX232` is normally a `5V` part.
+- It needs the charge-pump capacitors shown in its datasheet.
+- If your USB UART only exposes `3.3V` logic, do not assume that is a drop-in match for a classic `MAX232` build without checking the exact module and transceiver variant.
 
 Typical parts:
 
@@ -168,6 +254,8 @@ RS-232 side:
 - `MAX232 T1OUT` -> 7228 `DB25 pin 3`
 - 7228 `DB25 pin 2` -> `MAX232 R1IN`
 - `GND` -> 7228 `DB25 pin 7`
+
+This `3-wire` arrangement is the baseline bring-up configuration for the `MAX232` experiment.
 
 ## DIY Circuit with a MAX233
 
@@ -247,14 +335,15 @@ They are the wrong electrical interface unless an `RS-232` transceiver stage is 
 
 ## Recommended Bring-Up Order
 
-1. Start with a `3-wire` connection: `TXD`, `RXD`, `GND`.
-2. Use a proper `RS-232` transceiver or a real `USB-to-RS232` adapter.
-3. Try software flow control first.
-4. If needed, add the `CTS/DTR` handshake wiring.
-5. If the baud rate is unknown, use the documented `break + 0x80` recovery sequence.
+1. Start with the `Eminent EM1016` and a `3-wire` connection: `TXD`, `RXD`, `GND`.
+2. Try software flow control first.
+3. If needed, add the `CTS/DTR` handshake wiring.
+4. If the baud rate is unknown, use the documented `break + 0x80` recovery sequence.
+5. Use the TTL-plus-transceiver path only if the EM1016 path is unavailable.
 
 ## References
 
 - Main project README: `README.md`
+- EM1016 local adapter PDF: `docs/EM1016-datasheet.pdf`
 - GTEK manual in this repo: `docs/users-manual.pdf`
 - MAX220/MAX233 family datasheet in this repo: `docs/MAX220.PDF`

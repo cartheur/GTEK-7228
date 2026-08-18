@@ -1,5 +1,11 @@
 ## GTEK-7228
 
+Run the Tcl/Tk terminal:
+
+```bash
+./terminal/gtek-terminal.tcl -device /dev/serial/by-id/usb-Prolific_Technology_Inc._USB-Serial_Controller_D-if00-port0
+```
+
 The “GTEK 7228” is a vintage EPROM/ROM programmer—i.e., a bench device used by hobbyists/technicians to program erasable memory chips in the pre-flash era - such as 27C-series EPROMs. It’s typically operated over a serial connection using a simple command/menu interface, where you select the EPROM type/device from a prompt and then send read/write commands in standard text formats like Intel HEX or Motorola S-Record.
 
 _Background_
@@ -13,7 +19,15 @@ KATRINA NOTICE - Gtek and its facility were severely damaged by Hurricane Katrin
 ```
 Documentation and operation experience - here lies my journey. The comms are silent.
 
-Additional serial adapter and USB-TTL wiring guidance is in [docs/serial-adapter-guide.md](docs/serial-adapter-guide.md).
+Additional serial adapter guidance is in [docs/serial-adapter-guide.md](docs/serial-adapter-guide.md). For the current bring-up plan, the preferred hardware path is `Debian box -> Eminent EM1016 USB-to-RS232 adapter -> 7228`.
+
+For first-time diagnosis and serial bring-up on a modern Debian machine, start with [docs/first-bringup-debian.md](docs/first-bringup-debian.md). That guide uses the local helper scripts in `scripts/` and is the quickest path to first contact with a dusty unit.
+
+For a future stable interactive serial interface on Debian, there is also a Tcl/Tk terminal at `terminal/gtek-terminal.tcl` with EM1016-friendly defaults.
+
+If you need to fabricate the physical link first, use [docs/cable-build.md](docs/cable-build.md) for the EM1016-first cable path and exact first-pass pinout.
+
+That cable note now includes finished end-to-end wiring maps for both `EM1016 DB9 -> 7228 DB25` and `SH-U09C5 -> MAX233 -> 7228 DB25`.
 
 ![7228](/images/7228-1-mini.jpg)
 
