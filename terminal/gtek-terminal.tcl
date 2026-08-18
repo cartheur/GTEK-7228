@@ -118,6 +118,20 @@ namespace eval serialPort {
 
     variable recordingFileName {}
     variable recordingFile {}
+
+    proc displayName {} {
+        variable name
+        if {[string match "/dev/serial/by-id/*" $name]} {
+            set tail [file tail $name]
+            set marker "._"
+            set markerIndex [string first $marker $tail]
+            if {$markerIndex >= 0} {
+                return [string range $tail [expr {$markerIndex + 2}] end]
+            }
+            return $tail
+        }
+        return $name
+    }
     
     proc receive {} {
 	# Receive and process characters that have arrived.
@@ -198,7 +212,8 @@ namespace eval serialPort {
 	    set state closed
 	} else {
 	    set tty $result 
-	    puts "Serial port is open as $tty"
+	    set shownName [displayName]
+	    puts "Serial port open: $shownName at $baudRate $parityAndBits handshake=$handShake (Tcl channel $tty)"
 	    # We allow a short timeout period to prevent the read function
 	    # from stalling for too long.
 	    chan configure $tty -mode $baudRate,$parityAndBits -timeout 10 \
@@ -523,6 +538,42 @@ namespace eval uiTooltip {
     }
 }; # end namespace uiTooltip
 
+namespace eval uiContextMenu {
+    variable menuWidget
+
+    proc copySelection {} {
+        variable ::logText::textWidget
+        if {![catch {$textWidget get sel.first sel.last} selectedText]} {
+            clipboard clear
+            clipboard append $selectedText
+        }
+    }
+
+    proc selectAll {} {
+        variable ::logText::textWidget
+        $textWidget tag add sel 1.0 "end-1c"
+        focus $textWidget
+    }
+
+    proc popup {widget x y} {
+        variable menuWidget
+        if {![winfo exists $menuWidget]} {
+            menu $menuWidget -tearoff 0
+            $menuWidget add command -label "Copy" -command { ::uiContextMenu::copySelection }
+            $menuWidget add command -label "Select All" -command { ::uiContextMenu::selectAll }
+        }
+        set hasSelection [expr {![catch {$widget index sel.first}]}]
+        if {$hasSelection} {
+            $menuWidget entryconfigure "Copy" -state normal
+        } else {
+            $menuWidget entryconfigure "Copy" -state disabled
+        }
+        tk_popup $menuWidget $x $y
+    }
+}; # end namespace uiContextMenu
+
+set ::uiContextMenu::menuWidget .logContextMenu
+
 # Entry for collecting the outgoing text.
 set entryFrame [ttk::labelframe .ef -text " Command to GTEK 7228 "]
 set ::entryText [ttk::entry .ef.et -textvariable ::textBuffer -width $::logText::textWidth]
@@ -565,7 +616,15 @@ bind $deviceEntry <FocusOut> { uiTooltip::hide }
 bind $deviceEntry <ButtonPress> { uiTooltip::hide }
 bind $speedEntry <Return> { serialPort::restart }
 bind $parityBitsEntry <Return> { serialPort::restart }
+bind $parityBitsEntry <Enter> { uiTooltip::show %W "n,8,1 = no parity, 8 data bits, 1 stop bit" }
+bind $parityBitsEntry <Leave> { uiTooltip::hide }
+bind $parityBitsEntry <FocusOut> { uiTooltip::hide }
+bind $parityBitsEntry <ButtonPress> { uiTooltip::hide }
 bind $handShakeEntry <Return> { serialPort::restart }
+bind $handShakeEntry <Enter> { uiTooltip::show %W "xonxoff = software flow control using XON resume and XOFF pause" }
+bind $handShakeEntry <Leave> { uiTooltip::hide }
+bind $handShakeEntry <FocusOut> { uiTooltip::hide }
+bind $handShakeEntry <ButtonPress> { uiTooltip::hide }
 
 proc sendTextChar { character } {
     # We use this function in the key-binding for the logText widget.
@@ -648,6 +707,7 @@ bind $logText::textWidget <<SaveLogText>> { logText::save }
 bind $logText::textWidget <<StartRecording>> { serialPort::startRecording }
 bind $logText::textWidget <<StopRecording>> { serialPort::stopRecording }
 bind $logText::textWidget <<Exit>> { displayExitDialog }
+bind $logText::textWidget <Button-3> { uiContextMenu::popup %W %X %Y }
 
 bind $::entryText <Return> { sendTextBuffer }
 bind $::entryText <<SendFile>> { sendFile }
