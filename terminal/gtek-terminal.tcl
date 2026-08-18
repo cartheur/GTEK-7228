@@ -118,6 +118,16 @@ namespace eval serialPort {
 
     variable recordingFileName {}
     variable recordingFile {}
+    variable configWidgets {}
+
+    proc setConfigWidgetsState {widgetState} {
+        variable configWidgets
+        foreach widget $configWidgets {
+            if {[winfo exists $widget]} {
+                $widget configure -state $widgetState
+            }
+        }
+    }
 
     proc displayName {} {
         variable name
@@ -250,10 +260,14 @@ namespace eval serialPort {
     proc startRecording {} {
         variable recordingFileName
         variable recordingFile
+        if {[string length $recordingFile] > 0} {
+            return
+        }
         set recordingFileName [tk_getSaveFile -initialfile $recordingFileName \
                                    -title "Start saving text to file"]
         if {[string length $recordingFileName] > 0} {
             set recordingFile [open $recordingFileName w]
+            setConfigWidgetsState disabled
         }
     }; # end startRecording
 
@@ -263,6 +277,7 @@ namespace eval serialPort {
             flush $recordingFile
             close $recordingFile
             set recordingFile {}
+            setConfigWidgetsState normal
         }
     }; # end stopRecording
 }; # end namespace serialPort
@@ -603,6 +618,8 @@ pack $lab5 $entr5 -side left
 set lab6 [ttk::label .sf.lab6 -text "Pause(ms):"]
 set entr6 [ttk::entry .sf.entr6 -width 6 -textvariable ::smartSend::pauseBetweenChar]
 pack $lab6 $entr6 -side left
+
+set ::serialPort::configWidgets [list $deviceEntry $speedEntry $parityBitsEntry $handShakeEntry]
 
 # Pack the frames in order
 pack $statusFrame -fill x -expand 0 -pady 5
