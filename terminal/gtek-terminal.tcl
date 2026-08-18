@@ -350,7 +350,7 @@ proc displayExitDialog {} {
 
 proc displayAboutMessage {} {
     tk_messageBox -type ok -icon info -parent . \
-	-message "GTEK 7228 terminal in Tcl/Tk\nEM1016-friendly serial terminal for Debian.\n2026-08-17"
+	-message "GTEK 7228 terminal with \nEM1016 serial for Debian."
 }
 
 proc displayHints {} {
@@ -524,7 +524,7 @@ namespace eval uiTooltip {
 }; # end namespace uiTooltip
 
 # Entry for collecting the outgoing text.
-set entryFrame [ttk::labelframe .ef -text " Command to Send to GTEK 7228 "]
+set entryFrame [ttk::labelframe .ef -text " Command to GTEK 7228 "]
 set ::entryText [ttk::entry .ef.et -textvariable ::textBuffer -width $::logText::textWidth]
 pack $::entryText -side left -fill x -expand 1
 
