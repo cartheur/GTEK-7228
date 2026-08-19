@@ -404,10 +404,6 @@ menu .mb.file -tearoff 0
 .mb.file add command -label "Stop Recording" -command { serialPort::stopRecording }
 .mb.file add command -label "Exit" -command { displayExitDialog }
 .mb add cascade -label File -menu .mb.file
-menu .mb.log -tearoff 0
-.mb.log add command -label "Clear" -command { logText::clear }
-.mb.log add command -label "Save..." -command { logText::save }
-.mb add cascade -label Log -menu .mb.log
 menu .mb.gtek -tearoff 0
 .mb.gtek add command -label "Send Space" -command { gtekSendSpace }
 .mb.gtek add command -label "Send CR" -command { gtekSendCR }
@@ -417,7 +413,11 @@ menu .mb.gtek -tearoff 0
 .mb.gtek add command -label "Abort Current Send" -command { sendControl::requestAbort }
 .mb.gtek add separator
 .mb.gtek add command -label "Restart Serial Port" -command { serialPort::restart }
-.mb add cascade -label GTEK -menu .mb.gtek
+.mb add cascade -label Device -menu .mb.gtek
+menu .mb.window -tearoff 0
+.mb.window add command -label "Clear Log" -command { logText::clear }
+.mb.window add command -label "Save Log..." -command { logText::save }
+.mb add cascade -label Window -menu .mb.window
 menu .mb.help -tearoff 0
 .mb.help add command -label "About..." -command { displayAboutMessage }
 .mb.help add command -label "Command options" -command { displayCommandOptions }
