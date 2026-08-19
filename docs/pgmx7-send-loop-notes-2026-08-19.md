@@ -10,6 +10,13 @@ The live `MODEL 7228 V7.07` unit still reports `*DT ERR @ 0010` during Intel HEX
 
 At this point, the highest-value next step is to mimic the original DOS sender more faithfully.
 
+One caution for the next session:
+
+- the manual's `P` command description is for raw ASCII-hex byte data terminated by `$`
+- that is not the same thing as Intel HEX `:` records
+- the manual also states that a leading `:` in command state is itself a valid direct Intel HEX programming path
+- any transliteration of the DOS sender must preserve that distinction instead of collapsing everything into raw `P ... $`
+
 ## Strong Findings From `PGMX7.COM`
 
 These are directly supported by string extraction and disassembly.
@@ -149,6 +156,8 @@ What it does not yet prove:
 
 The best next engineering task is:
 
+- separate the manual's raw `P ... $` ascii-hex path from the Intel HEX record path before implementing anything else
+- treat direct colon-led Intel HEX records from command state as a first-class programming path
 - extract the `PGMX7` transmit/receive state machine more carefully
 - write the resulting behavior down as tighter pseudocode
 - then implement that state machine in a dedicated Python sender for the `7228`

@@ -18,14 +18,15 @@ The current project goal is:
 
 The remaining blocker is not the `ASSIST09` image itself.
 
-The remaining blocker is the modern host-to-`7228` transport path for Intel HEX programming in `P` mode.
+The remaining blocker is the modern host-to-`7228` transport path for device programming.
 
 As of Wednesday, August 19, 2026:
 
 - raw serial interactivity is confirmed working
 - readback commands are confirmed working
-- a stricter one-line single-record Intel HEX `P` test still fails with `*DT ERR @ 0010`
-- the blocker is therefore narrower and uglier than first thought: the `P` transfer path itself is not yet trustworthy enough for a full `ASSIST09` burn
+- a stricter one-line single-record colon-led Intel HEX test still fails with `*DT ERR @ 0010`
+- the manual confirms that colon-led Intel HEX records from command state are a valid direct programming path
+- the blocker is therefore narrower and uglier than first thought: the live programming-data transport is not yet trustworthy enough for a full `ASSIST09` burn
 
 ## Practical Interpretation
 
