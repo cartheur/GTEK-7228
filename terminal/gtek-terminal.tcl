@@ -108,7 +108,7 @@ namespace eval serialPort {
     variable dataBits 8; # 7 8
     variable stopBits 1; # 1 2
     variable parityAndBits "$parity,$dataBits,$stopBits"
-    variable handShake rtscts; # none xonxoff rtscts
+    variable handShake none; # none xonxoff rtscts
     variable name /dev/serial/by-id/usb-Prolific_Technology_Inc._USB-Serial_Controller_D-if00-port0
     if { [string equal $::tcl_platform(platform) windows] } {
 	set name {\\.\com5}
@@ -471,11 +471,16 @@ proc displayHints {} {
 	"\n----------------------------------------------------------"
 	"\nType directly into the text window.  Characters will go to the device one at a time.  Incoming characters from the device will appear in the text window."
 	"\n"
-	"\nFor the GTEK Model 7228 v7.07 unit start at 2400 8N1 with RTS/CTS after cold power-up when the optional handshake wires are connected. This is set by default."
+	"\nFor the GTEK Model 7228 v7.07 unit start at 2400 8N1 after cold power-up."
+	"\nThe original documentation uses a DTR/CTS-style control scheme."
+	"\nThe host's generic RTS/CTS option is only an approximation of that behavior,"
+	"\nso the Tcl app now starts with no handshake selected by default."
 	"\n"
 	"\nAlternatively, type into the command-line and press 'Enter' to send the full line with a trailing carriage-return. This interactive path sends immediately and does not wait for a returned carriage-return from the device."
 	"\n"
-	"\nWhen sending a file to program a ROM, for every line of the file, characters go none at a time to the device, but the shell will await for a carriage-return from the device before sending the next line."
+	"\nWhen sending a file to program a ROM, the exact multi-record Intel HEX behavior"
+	"\nfor this V7.07 unit is still being characterized. Use the dedicated Python helpers"
+	"\nfor serious programming tests when possible."
 	"\n----------------------------------------------------------"
 	"\n"
     }
@@ -757,13 +762,13 @@ proc updateDeviceMenuTooltip {menuWidget} {
 proc handShakeTooltipText {} {
     switch -- $::serialPort::handShake {
         rtscts {
-            return "rtscts = hardware flow control using DB9 pin 4 -> 7228 pin 5 and DB9 pin 8 <- 7228 pin 20"
+            return "rtscts = host-side RTS/CTS flow control. With the current cable it approximates the 7228's original DTR/CTS-style control path, but it is not yet proven to match the manual exactly"
         }
         xonxoff {
             return "xonxoff = software flow control using XON resume and XOFF pause"
         }
         none {
-            return "none = no flow control; use only if the link is stable without handshake"
+            return "none = no host-side flow control. This is the current conservative default for the Tcl app on the V7.07 unit"
         }
         default {
             return "Select serial flow control mode"
@@ -820,7 +825,7 @@ pack $lab1 $deviceEntry -side left
 set lab2 [ttk::label .sf.lab2 -text "Speed:"]
 set speedEntry [ttk::combobox .sf.entr2 -width 8 \
                     -textvariable ::serialPort::baudRate \
-                    -values [list 2400 4800 9600 19200]]
+                    -values [list 2400]]
 pack $lab2 $speedEntry -side left
 set lab3 [ttk::label .sf.lab3 -text "ParityAndBits:"]
 set parityBitsEntry [ttk::entry .sf.entr3 -width 6 -textvariable ::serialPort::parityAndBits]
@@ -828,7 +833,7 @@ pack $lab3 $parityBitsEntry -side left
 set lab4 [ttk::label .sf.lab4 -text "Hand Shake:"]
 set handShakeEntry [ttk::combobox .sf.entr4 -width 7 \
                         -textvariable ::serialPort::handShake \
-                        -values [list xonxoff rtscts none]]
+                        -values [list none xonxoff rtscts]]
 pack $lab4 $handShakeEntry -side left
 set lab5 [ttk::label .sf.lab5 -text "State:"]
 set entr5 [ttk::entry .sf.entr5 -width 6 -textvariable ::serialPort::state -state readonly]

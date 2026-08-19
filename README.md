@@ -25,6 +25,8 @@ For the first successful power-supply recovery measurements, including the fuse 
 
 For the first confirmed successful serial boot to the `xxxx>` prompt and `EPROM SELECTION MENU` on August 19, 2026, including the note that this specific `MODEL 7228 V7.07` unit was later rechecked and found to come up reliably at `2400 8N1 xonxoff` over the current three-wire cable, see [docs/milestone-2026-08-19-first-boot-menu.md](docs/milestone-2026-08-19-first-boot-menu.md).
 
+For the most useful findings extracted from the recovered original `1980s` GTEK software bundle on August 19, 2026, including the note that `PGMX7` is not actually the canonical model for the `7228`, see [docs/80s-software-findings-2026-08-19.md](docs/80s-software-findings-2026-08-19.md).
+
 For a future stable interactive serial interface on Debian, there is also a Tcl/Tk terminal at `terminal/gtek-terminal.tcl` with EM1016-friendly defaults.
 
 For checking saved Intel HEX ROM captures from the terminal, use `./scripts/check-intel-hex-capture.py CAPTURE --expected-size 27128`.
