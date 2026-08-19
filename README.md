@@ -27,6 +27,8 @@ For the first confirmed successful serial boot to the `xxxx>` prompt and `EPROM 
 
 For a future stable interactive serial interface on Debian, there is also a Tcl/Tk terminal at `terminal/gtek-terminal.tcl` with EM1016-friendly defaults.
 
+For checking saved Intel HEX ROM captures from the terminal, use `./scripts/check-intel-hex-capture.py CAPTURE --expected-size 27128`.
+
 If you need to fabricate the physical link first, use [docs/cable-build.md](docs/cable-build.md) for the EM1016-first cable path and exact first-pass pinout.
 
 That cable note now includes finished end-to-end wiring maps for both `EM1016 DB9 -> 7228 DB25` and `SH-U09C5 -> MAX233 -> 7228 DB25`.

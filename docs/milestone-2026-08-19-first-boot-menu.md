@@ -53,3 +53,5 @@ The repo now has a verified end-to-end path for:
 - menu interaction
 
 The next work, if any, is no longer first bring-up. It is operational exploration and device-specific use.
+
+For saved terminal captures of ROM reads, the repo also includes `scripts/check-intel-hex-capture.py` to verify whether an Intel HEX dump is complete or begins partway through.

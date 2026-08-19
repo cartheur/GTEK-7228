@@ -165,7 +165,7 @@ namespace eval serialPort {
 	}
         if { [string length $recordingFile] > 0 } {
             puts -nonewline $recordingFile $incomingText
-            flush stdout
+            flush $recordingFile
         }
         foreach character [split $incomingText {}] {
             # binary scan $character "c" charCode
@@ -267,6 +267,8 @@ namespace eval serialPort {
                                    -title "Start saving text to file"]
         if {[string length $recordingFileName] > 0} {
             set recordingFile [open $recordingFileName w]
+            puts -nonewline $recordingFile [$::logText::textWidget get 1.0 end-1c]
+            flush $recordingFile
             setConfigWidgetsState disabled
         }
     }; # end startRecording
@@ -392,6 +394,8 @@ proc displayHints {} {
 	"\n"
 	"\nAlternatively, type into the command-line widget and press"
 	"\nEnter to send the full line with a trailing carriage-return."
+	"\nThis interactive path sends immediately and does not wait"
+	"\nfor a returned carriage-return from the 7228."
 	"\n"
 	"\nSending a file: For every line of the file, characters go"
 	"\none at a time to the 7228, but the shell will"
