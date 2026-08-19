@@ -424,8 +424,6 @@ menu .mb
 . configure -menu .mb
 menu .mb.file -tearoff 0
 .mb.file add command -label "Send..." -command { sendFile }
-.mb.file add command -label "Start Recording..." -command { serialPort::startRecording }
-.mb.file add command -label "Stop Recording" -command { serialPort::stopRecording }
 .mb.file add command -label "Exit" -command { displayExitDialog }
 .mb add cascade -label File -menu .mb.file
 menu .mb.gtek -tearoff 0
@@ -438,6 +436,10 @@ menu .mb.gtek -tearoff 0
 .mb.gtek add separator
 .mb.gtek add command -label "Restart Serial Port" -command { serialPort::restart }
 .mb add cascade -label Device -menu .mb.gtek
+menu .mb.recording -tearoff 0
+.mb.recording add command -label "Start Recording..." -command { serialPort::startRecording }
+.mb.recording add command -label "Stop Recording" -command { serialPort::stopRecording }
+.mb add cascade -label Recording -menu .mb.recording
 menu .mb.window -tearoff 0
 .mb.window add command -label "Clear" -command { logText::clear }
 .mb.window add command -label "Save..." -command { logText::save }
