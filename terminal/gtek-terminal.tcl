@@ -119,6 +119,7 @@ namespace eval serialPort {
     variable recordingFileName {}
     variable recordingFile {}
     variable configWidgets {}
+    variable receiveCount 0
 
     proc setConfigWidgetsState {widgetState} {
         variable configWidgets
@@ -147,6 +148,7 @@ namespace eval serialPort {
 	# Receive and process characters that have arrived.
 	variable tty
         variable recordingFile
+        variable receiveCount
         # First, unregister while we are busy servicing the incoming text.
         chan event $tty readable {}
 	if { [chan eof $tty] } {
@@ -163,6 +165,7 @@ namespace eval serialPort {
 	if { [string length $incomingText] == 0 } {
 	    return
 	}
+        set receiveCount [expr {$receiveCount + [string length $incomingText]}]
         if { [string length $recordingFile] > 0 } {
             puts -nonewline $recordingFile $incomingText
             flush $recordingFile
@@ -217,12 +220,14 @@ namespace eval serialPort {
 	variable handShake
 	variable tty
 	variable state
+        variable receiveCount
 	if { [catch {::open $name r+} result] } {
 	    puts "serialPort::open : $result"
             set tty none
 	    set state closed
 	} else {
 	    set tty $result 
+            set receiveCount 0
 	    set shownName [displayName]
 	    puts "Serial port open: $shownName at $baudRate $parityAndBits handshake=$handShake (Tcl channel $tty)"
 	    # We allow a short timeout period to prevent the read function
@@ -237,6 +242,11 @@ namespace eval serialPort {
 	    set state open
 	}
     }; # end start
+
+    proc getReceiveCount {} {
+        variable receiveCount
+        return $receiveCount
+    }
 
     proc stop {} {
 	variable tty
@@ -355,6 +365,20 @@ namespace eval smartSend {
 namespace eval sendControl {
     variable abortRequested false
     variable active false
+
+    proc waitForReceiveCount {targetCount {timeoutMs 4000}} {
+        set deadline [expr {[clock milliseconds] + $timeoutMs}]
+        while {[::serialPort::getReceiveCount] < $targetCount} {
+            if {[isAbortRequested]} {
+                return -code error "wait aborted by user."
+            }
+            if {[clock milliseconds] >= $deadline} {
+                return -code error "timed out waiting for device feedback."
+            }
+            update
+            after 1
+        }
+    }
 
     proc begin {} {
         variable abortRequested
@@ -876,6 +900,7 @@ proc sendFile {} {
                 if {[::sendControl::isAbortRequested]} {
                     break
                 }
+                set expectedEchoCount [expr {[::serialPort::getReceiveCount] + [string length $line]}]
                 foreach character [split $line {}] {
                     if {[::sendControl::isAbortRequested]} {
                         break
@@ -889,6 +914,10 @@ proc sendFile {} {
                 }
                 serialPort::send "\r"
                 update
+                if [catch {::sendControl::waitForReceiveCount $expectedEchoCount} result] {
+                    puts "hex send failed: $result"
+                    break
+                }
                 after $::smartSend::pauseBetweenHexLines
             }
         } else {
