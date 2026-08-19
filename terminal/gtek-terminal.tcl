@@ -674,10 +674,22 @@ proc sendFile {} {
 			   -title "Open file to send"]
     if {[string length $::sendFileName] > 0} {
 	set fp [open $::sendFileName "r"]
-	while {[gets $fp line] >= 0} {
-            if [catch {smartSend::sendLine $line} result] {
-                puts "sendLine failed: $result"
-                break
+        set extension [string tolower [file extension $::sendFileName]]
+        if {$extension in {".hex" ".ihx"}} {
+            while {[gets $fp line] >= 0} {
+                foreach character [split $line {}] {
+                    serialPort::send $character
+                    after $::smartSend::pauseBetweenChar
+                }
+                serialPort::send "\r"
+                after $::smartSend::pauseBetweenChar
+            }
+        } else {
+	    while {[gets $fp line] >= 0} {
+                if [catch {smartSend::sendLine $line} result] {
+                    puts "sendLine failed: $result"
+                    break
+                }
             }
         }
 	close $fp

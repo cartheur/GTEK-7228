@@ -1,0 +1,6 @@
+source=/home/cartheur/ame/aiventure/aiventure-github/cartheur/M6x09-II-SBC/src/m6809/assist09.bin
+payload_bytes=0x800
+eprom_size=0x4000
+eprom_base=0xC000
+cpu_base=0xF800
+payload_offset=0x3800
