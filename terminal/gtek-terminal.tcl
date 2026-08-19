@@ -411,6 +411,7 @@ menu .mb.log -tearoff 0
 menu .mb.gtek -tearoff 0
 .mb.gtek add command -label "Send Space" -command { gtekSendSpace }
 .mb.gtek add command -label "Send CR" -command { gtekSendCR }
+.mb.gtek add command -label "Send Ctrl-C" -command { gtekSendCtrlC }
 .mb.gtek add command -label "Send XON" -command { gtekSendXON }
 .mb.gtek add command -label "Send XOFF" -command { gtekSendXOFF }
 .mb.gtek add command -label "Abort Current Send" -command { sendControl::requestAbort }
@@ -483,6 +484,7 @@ proc displayHints {} {
 	"\nMenu actions under GTEK:"
 	"\nSend Space  useful for provoking or refreshing a prompt"
 	"\nSend CR     send carriage-return only"
+	"\nSend Ctrl-C send ETX directly to the 7228"
 	"\nSend XON    control-Q"
 	"\nSend XOFF   control-S"
 	"\n----------------------------------------------------------"
@@ -829,6 +831,7 @@ bind $::entryText <<AbortSend>> { sendControl::requestAbort }
 bind $::entryText <<StartRecording>> { serialPort::startRecording }
 bind $::entryText <<StopRecording>> { serialPort::stopRecording }
 bind $::entryText <<Exit>> { displayExitDialog }
+bind all <<AbortSend>> { sendControl::requestAbort }
 bind $::entryText <Up> {
     set ::textBuffer [::cmdHistory::getPrevious];
     $::entryText icursor end
@@ -845,6 +848,10 @@ proc gtekSendSpace {} {
 
 proc gtekSendCR {} {
     serialPort::send "\x0d"
+}
+
+proc gtekSendCtrlC {} {
+    serialPort::send "\x03"
 }
 
 proc gtekSendXON {} {
