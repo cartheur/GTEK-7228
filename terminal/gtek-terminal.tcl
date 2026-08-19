@@ -108,7 +108,7 @@ namespace eval serialPort {
     variable dataBits 8; # 7 8
     variable stopBits 1; # 1 2
     variable parityAndBits "$parity,$dataBits,$stopBits"
-    variable handShake xonxoff; # none xonxoff rtscts
+    variable handShake rtscts; # none xonxoff rtscts
     variable name /dev/serial/by-id/usb-Prolific_Technology_Inc._USB-Serial_Controller_D-if00-port0
     if { [string equal $::tcl_platform(platform) windows] } {
 	set name {\\.\com5}
@@ -443,8 +443,9 @@ proc displayHints {} {
 	"\nthe GTEK 7228, one at a time.  Incoming characters"
 	"\nfrom the 7228 will appear in the text window."
 	"\n"
-	"\nBench note for the current Model 7228 V7.07 unit:"
-	"\nstart at 2400 8N1 with XON/XOFF after cold power-up."
+	"\nNote for the current Model 7228 V7.07 unit:"
+	"\nstart at 2400 8N1 with RTS/CTS after cold power-up"
+	"\nwhen the optional handshake wires are connected."
 	"\n"
 	"\nAlternatively, type into the command-line widget and press"
 	"\nEnter to send the full line with a trailing carriage-return."
@@ -622,6 +623,23 @@ namespace eval uiTooltip {
     }
 }; # end namespace uiTooltip
 
+proc handShakeTooltipText {} {
+    switch -- $::serialPort::handShake {
+        rtscts {
+            return "rtscts = hardware flow control using DB9 pin 4 -> 7228 pin 5 and DB9 pin 8 <- 7228 pin 20"
+        }
+        xonxoff {
+            return "xonxoff = software flow control using XON resume and XOFF pause"
+        }
+        none {
+            return "none = no flow control; use only if the link is stable without handshake"
+        }
+        default {
+            return "Select serial flow control mode"
+        }
+    }
+}
+
 namespace eval uiContextMenu {
     variable menuWidget
 
@@ -704,16 +722,21 @@ bind $deviceEntry <Leave> { uiTooltip::hide }
 bind $deviceEntry <FocusOut> { uiTooltip::hide }
 bind $deviceEntry <ButtonPress> { uiTooltip::hide }
 bind $speedEntry <Return> { serialPort::restart }
+bind $speedEntry <Enter> { uiTooltip::show %W "For the current Model 7228 V7.xx unit, start at 2400 baud after cold power-up." }
+bind $speedEntry <Leave> { uiTooltip::hide }
+bind $speedEntry <FocusOut> { uiTooltip::hide }
+bind $speedEntry <ButtonPress> { uiTooltip::hide }
 bind $parityBitsEntry <Return> { serialPort::restart }
 bind $parityBitsEntry <Enter> { uiTooltip::show %W "n,8,1 = no parity, 8 data bits, 1 stop bit" }
 bind $parityBitsEntry <Leave> { uiTooltip::hide }
 bind $parityBitsEntry <FocusOut> { uiTooltip::hide }
 bind $parityBitsEntry <ButtonPress> { uiTooltip::hide }
 bind $handShakeEntry <Return> { serialPort::restart }
-bind $handShakeEntry <Enter> { uiTooltip::show %W "xonxoff = software flow control using XON resume and XOFF pause" }
+bind $handShakeEntry <Enter> { uiTooltip::show %W [handShakeTooltipText] }
 bind $handShakeEntry <Leave> { uiTooltip::hide }
 bind $handShakeEntry <FocusOut> { uiTooltip::hide }
 bind $handShakeEntry <ButtonPress> { uiTooltip::hide }
+bind $handShakeEntry <<ComboboxSelected>> { uiTooltip::show %W [handShakeTooltipText] }
 
 proc sendTextChar { character } {
     # We use this function in the key-binding for the logText widget.
