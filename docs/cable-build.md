@@ -84,6 +84,20 @@ With the EM1016 `DB9 male`, optional hardware flow control usually means:
 | pin `4` `DTR` | pin `5` `CTS` | optional host-to-7228 flow control |
 | pin `8` `CTS` | pin `20` `DTR` | optional 7228-to-host flow control |
 
+### Bench color map for the current finished cable
+
+For the currently fabricated bench cable in this repo, use this color convention:
+
+| Wire color | EM1016 `DB9 male` | 7228 `DB25 female` | Purpose |
+| --- | --- | --- | --- |
+| `red` | pin `3` `TXD` | pin `3` `RXD` | send to 7228 |
+| `white` | pin `2` `RXD` | pin `2` `TXD` | receive from 7228 |
+| `black` | pin `5` `GND` | pin `7` `SG` | signal ground |
+| `blue` | pin `4` `DTR` | pin `5` `CTS` | optional host-to-7228 flow control |
+| `green` | pin `8` `CTS` | pin `20` `DTR` | optional 7228-to-host flow control |
+
+This color assignment is a bench documentation choice for the current cable, not a universal RS-232 standard.
+
 For clarity, that means the first useful pins on the 7228 side are:
 
 - pin `2` = data out of the 7228
