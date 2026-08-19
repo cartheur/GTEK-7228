@@ -107,6 +107,11 @@ That means we deliberately begin with:
 
 and not with extra handshake wires.
 
+Important observed exception for this repo's current bench unit:
+
+- on `2026-08-19`, the specific `MODEL 7228 V7.07` unit under test responded repeatably after cold power-up at `2400 8n1 xonxoff`
+- for this unit, treat `2400` as the first manual fallback when a fresh power-cycle gives no prompt at the higher default probing rates
+
 Use:
 
 ```bash

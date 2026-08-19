@@ -11,6 +11,13 @@ Observed prompt and interaction sequence:
 - power-up prompt appears as `xxxx>`
 - sending `M` followed by `Enter` returns the full `EPROM SELECTION MENU`
 - the unit is therefore alive, running firmware, and responding normally to terminal commands
+- after the later bench recheck on `2026-08-19`, the repeatable cold-start serial baseline for this specific unit was confirmed as `2400 8N1 xonxoff`
+
+Observed version information for this specific unit:
+
+- `GTEK, INC.`
+- `MODEL 7228 V7.07`
+- `COPYRIGHT 1983`
 
 This closes the main bring-up uncertainty that originally presented as "system does not power up."
 
@@ -23,6 +30,17 @@ The current successful link uses only the minimal `3-wire` serial connection:
 - `DB9 pin 5` -> `GTEK DB25 pin 7`
 
 This is sufficient for power-up prompt, menu access, and basic interactive terminal use.
+
+## Confirmed serial baseline for this unit
+
+For this specific `MODEL 7228 V7.07` unit, the repeatable power-cycle baseline observed on `2026-08-19` is:
+
+- baud `2400`
+- `8n1`
+- `xonxoff`
+- `3-wire` serial hookup only
+
+During troubleshooting on `2026-08-19`, a brief valid response was also observed at `4800` baud. After later retesting, that should be treated as a transient troubleshooting state rather than the canonical cold-start default for this machine.
 
 ## Extra wires present but not currently used
 
