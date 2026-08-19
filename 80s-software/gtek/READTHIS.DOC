@@ -1,0 +1,50 @@
+To make the BASIC programs work properly with BASICA or GWBASIC, you must
+follow the examples below!!!!
+
+BASICA EXAMPLES:
+
+BASICA SPLIT16 /S:512 /F:3		NOTE: /S: means to use variable length
+BASICA SPLIT32 /S:512 /F:5		files and use 512 byte buffers.
+BASICA INTR16 /S:512 /F:3		The /F: means allow either 3 or 5 file
+BASICA INTR32 /S:512 /F:5		buffers to be open at the same time.
+
+GWBASIC SPLIT16 /S:512 /F:3		NOTE: /S: means to use variable length
+GWBASIC SPLIT32 /S:512 /F:5		files and use 512 byte buffers.
+GWBASIC INTR16 /S:512 /F:3		The /F: means allow either 3 or 5 file
+GWBASIC INTR32 /S:512 /F:5		buffers to be open at the same time.
+
+QuickBasic
+
+C>QB split16 /X/O;		NOTE: make stand alone object file
+C>LINK split16;			Link stand alone object to EXE file
+
+usage:
+C>split16 ofn1 ofn2 ifn		ofn1=8 bit low byte file output by split16
+				ofn2=8 bit high byte file output by split16
+				ifn =16 bit combined file input by split16 
+C>QB split32 /x/o;
+C>link split32;
+
+Usage:
+C>split32 ofn1 ofn2 ofn3 ofn4 ifn	ofn1= 8 bit low byte file output
+ 					ofn2= 8 bit low middle byte file output
+					ofn3= 8 bit high mid byte file output 
+					ofn4= 8 bit high byte file output 
+					ifn =32 bit combined file for input 
+C>QB intr16 /x/o;
+C>link intr16;
+
+Usage:
+C>intr16 ifn1 ifn2 ofn		ifn1 = 8 bit low byte file for input by intr16
+				ifn2 = 8 bit high byte file for input by intr16
+				ofn  =16 bit combined file for output by intr16
+C>QB intr32 /x/o;
+C>link intr32;
+
+Usage:
+C>intr32 ifn1 ifn2 ifn3 ifn4 ofn	ifn1 = 8 bit low byte file for input
+					ifn2 = 8 bit low mid byte file for input
+					ifn3 = 8 bit high mid file for input 
+					ifn4 = 8 bit high byte file for input
+					ofn  =32 bit combined file for output
+

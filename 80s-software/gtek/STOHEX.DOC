@@ -1,0 +1,10 @@
+STOHEX is a Motoroal S record to Intel HEX conversion filter. If you have
+a Motorola S record file, before you can use pgmx, you must convert the
+file to INTEL HEX. This is simply done as follows:
+dos_prompt>STOHEX < Your_S_record_filename > output_filename.HEX
+
+Remember to use .HEX for the output filename extension. Don't forget
+the routing operators, < and >. ERRORLEVEL=1 if an error is detected
+during the conversion, 0 otherwise. This can be used for batch file 
+processing. See STO.bat.
+

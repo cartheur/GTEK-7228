@@ -1,0 +1,17 @@
+        FIXHEX.EXE inputfilename.HEX outputfilename.HEX loadaddress data
+
+        Fixhex allows you to replace data at "loadaddress" with the data
+        specified in "data". The file must be an Intel hex file. You have
+        to know the load address for your data.
+        eg. fixbin test.hex out.hex 112ac 01ff02fe03fd04fc05fb06fa07ee08
+        Opens file test.hex if it exists and out.hex (can't pre-exist) and
+        seeks byte number 112ac(hex) in the address range of the records.
+        The program HAS to read the entire file to find any specifed address,
+        and then replaces what is there with the data, 
+        "01ff02fe03fd04fc05fb06fa07ee08". It displays the replaced data
+        as well as the replacing data.
+        The syntax must be specified exactly as above, where the load-
+        address is in ascii-hex and separates the filenames and the data
+        with a single space between each. The data is also ascii-hex and
+        may not have a space separating bytes.
+

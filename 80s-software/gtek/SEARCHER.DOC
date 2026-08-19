@@ -1,0 +1,47 @@
+7128/7228/7956 users! You can use searcher too, but you have to
+use some common sense. The searcher database was designed for the
+model 9000/9800 series. The Menu selections however are mostly the 
+same for the same type parts on a 7000 series programmer, such as 
+the 7128, 7228 or 7956.
+
+Searcher.EXE  is a program designed to allow you to look  up  the 
+Manufacturer's part number and see what menu selection to use  on 
+the Model 9800 or 9000. It is a very simple program and is not in 
+the  final  form  yet. There are so many  new  eproms  and  other 
+devices that the 9800/9000 supports. Please check the list if you 
+are not certain which menu selection and algorithm to use.
+
+Example:
+
+C:\GTEK\>searcher[enter]
+
+Displays  a  list  of manufacturers. Select  the  number  of  the 
+manufacturer  you desire (or the 9800) and a list of  parts  that 
+can  be programmed on the 9000/9800 will be displayed.  The  9800 
+selection  also lists the rotary dip selections. The  highlighted 
+selection is the suggested one. Use of another may not program or 
+will  damage the part. Follow on screen directions to quit or  go 
+to another.
+
+You  can add to the part list yourself by using a word  processor 
+in the non-document mode. I suggest you try using EDLIN,  because 
+if  you do it right, you may not have to "fix" the file when  you 
+again enter searcher.
+
+Bug Fixes?
+1.01 First Release July, 1990
+1.02 If Searcher "locks up" when you run it, but still puts the
+     logon message on the screen, without saying "Mouse Driver
+     present" or "NO mouse driver present" then try turning off
+     all mouse driver checks by putting a /M or -M on the command 
+     line:  C:\GTEK\>Searcher -m[enter]
+     Tandy 1000EX's are one that have this problem when there is 
+     no mouse attached. Dec, 1990
+1.03 Added SEARCHER environment variable which you can use to allow
+     searcher to find its data file searcher.dat anywhere you want
+     to put it. Simply set the environment variable SEARCHER=your path
+     eg:   C>SET SEARCHER=C:\APPS\DATABASE\<cr>
+     to allow searcher to be run from anywhere and to find its data
+     file searcher.dat in the path c:\apps\database\searcher.dat.
+     Put only the path name, not the filename too!
+

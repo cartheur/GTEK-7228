@@ -1,0 +1,374 @@
+                          INTRODUCTION
+
+Parts   in  the  following list are listed by manufacturer   that  
+may  be programmed.    In  most  cases  you  probably  could  use  
+the   "generic"  selection of that part except  for  the  notable 
+exceptions  of the 27256.
+
+If   you don't see your part on the list,   you may send  a  data  
+sheet   to  GTEK  or  try calling GTEK to see if we can tell  you 
+about  a  particular part.    BE SURE to have a data sheet  handy 
+when  calling unless you  have not been able to obtain  one,   in 
+which  case  we  may or may not be able to tell you  if  it  will 
+program or how to program it.
+
+                          GENERAL RULES
+1- "A" version parts program at lower voltages than the  standard  
+   parts. If you try to Program, Verify, or List or Output an "A" 
+   part  using  a  "standard" selection  or   the  incorrect  al-
+   gorithm,  the part will  probably  die within microseconds due 
+   to  overvoltage  on  the programming  pin.    The  part   will  
+   appear to be OK and may even still contain any data  that  you 
+   had previously programmed in it,   but the symptom will be *WP 
+   ERR @ nnnn.  This goes for the MPU's also.
+ 
+2- CMOS   eproms  generally use different algorithms  to  program  
+   than  the NMOS  parts,   but if the voltage is the same,   you 
+   might  try the NMOS equivalent if you want to try  programming 
+   the part adaptively.
+
+3- ROMs  are  generally  readable on the programmer if  you  take 
+   precautions  to  not use a selection that is going to use  the 
+   Verify  mode to  read it.   If you're not sure,  call GTEK  or 
+   simply  use a spec sheet for the menu  selection  /  part  you 
+   would like to use and check the  Vpp  pin during  reads (OI or 
+   L) to see if programming voltage appears  there. This  is done 
+   with  NO part in the socket of  course.    Generally  the CMOS  
+   part selections and the 27512 and 68766 do not use the  Verify 
+   mode,   only  the   Read  mode.   This  may  not  always  hold  
+   true  on  all  of our programmers,  however.  ROM  equivalents  
+   of  MPU's may only be  read after modification of the program-
+   ming socket or recalibration of the programmer.  You must call 
+   GTEK for details of this.
+
+4- ROMs   may  be masked to use what would be  address  lines  on  
+   eproms   as  chip select lines.    This means that they  would 
+   address or enable the part  in  a  low  condition instead of a 
+   high condition  as  with  an address line.    This means  that 
+   sections  of the data might be swapped as  you read  it.    It 
+   could also mean that the part has no  eprom equivalent!
+
+GTEK   believes   that the information contained in this list   is  
+correct. However, GTEK assumes no responsibility or liability for 
+the  accuracy of this list.   See the bottom of the list for  the 
+last  update DATE.
+
+
+      NOTICE ! NOTICE ! NOTICE ! NOTICE ! NOTICE ! NOTICE !
+ANY SELECTION BELOW OF C D E F MAY BE MADE TO PROGRAM INTELLIGENT
+BY ALSO TYPING TI. FOR INSTANCE TO PROGRAM A 2764 INTELLIGENT, YOU
+TYPE "MRTI" AND THE PROMPTER WILL LOOK LIKE: xxxx>ME
+                                             2764>TI
+                                             i2764>_
+
+SOME SELECTIONS ARE AUTOMATICALLY INTELLIGENT LIKE MZ (i27256) AND
+M1 (i2764A). THIS IS TRUE FOR THE MODELS 7228, 7956 AND 9000 PROGRAMMERS.
+
+X = AVAILABLE  Y = RECOMMENDED  - = NOT USED
+AMD                                   Algorithm
+PART #    VOLTAGE TYPE MENU SIZE   STD.  INT.  QP.   ADAPTER
+EPROMS:                                                      
+AM2716     25.0   NMOS  B    2K     XY    -     -      -       
+AM2716B    12.5   NMOS  **   2K     -     XY    -      -
+AM2732     25.0   NMOS  C    4K     XY    X     X      -       
+AM2732A    21.0   NMOS  D    4K     X     XY    X      -       
+AM2732AP   21.0   NMOS  D    4K     X     XY    X      -       
+AM2732B    12.5   NMOS  **   4K     -     XY    -      -
+AM2764     21.0   NMOS  E    8K     X     XY    X      -       
+AM2764P    21.0   NMOS  E    8K     X     XY    X      -       
+AM2764A    12.5   NMOS  1    8K     -     XY    X      -       
+AM2764AP   12.5   NMOS  1    8K     -     XY    X      -       
+AM27128    21.0   NMOS  F   16K     X     XY    X      -       
+AM27128A   12.5   NMOS  2   16K     -     XY    X      -       
+AM27256    12.5   NMOS  Z   32K     -     XY    X      -       
+AM27512    12.5   NMOS  7   64K     -     XY    X      -       
+** see menu command (M<cr>)
+Model 9000 2716B = G, 2732B = H
+
+EEPROMS:
+AM9864     TTL    NMOS  |    8K     X     -     -      -
+
+MPU'S:
+8741       25.0   NMOS  R   1K      XY    -     -      481
+8742H      21.0   NMOS  U   2K      XY    -     -      481
+8748       25.0   NMOS  R   1K      XY    -     -      481
+8748H      21.0   NMOS  T   1K      XY    -     -      481
+8749H      21.0   NMOS  U   2K      XY    -     -      481
+
+X = AVAILABLE  Y = RECOMMENDED  - = NOT USED
+
+ATMEL                                  Algorithm
+PART #    VOLTAGE TYPE MENU SIZE   STD.  INT.  QP.   ADAPTER
+EPROM:
+AT27256    12.5   NMOS  Z   32K     -     XY    X      -
+AT27C256   12.5   CMOS  Z** 32K     -     XY    -      -
+** Model 9000 menu= 6
+
+EEPROM:
+AT28C64    TTL    CMOS  7   8K      XY    -     -      -
+
+CYPRESS                               Algorithm
+PART #    VOLTAGE TYPE MENU SIZE   STD.  INT.  QP.   ADAPTER
+PROM:**
+CY7C281    13.5   CMOS  @   1K      XY    -     -      - 
+CY7C282    13.5   CMOS  @   1K      XY    -     -      -
+CY7C291    13.5   CMOS  @   2K      XY    -     -      -
+CY7C292    13.5   CMOS  @   2K      XY    -     -      -
+** others of the series may be programmed by judicious use of load addresses!
+   See MENU of programmer for another 292 selections
+
+FUJITSU                               Algorithm
+PART #    VOLTAGE TYPE MENU SIZE   STD.  INT.  QP.   ADAPTER
+EPROMS:
+MBM2764    21.0   NMOS  E    8K     X     XY    X      -
+MBM27C64   21.0   CMOS  O    8K     XY    -     -      -
+MBM27128   21.0   NMOS  F   16K     X     XY    X      -
+MBM27256   12.5   NMOS  G,% 32K     -     XY    -      - (SEE NOTE 1)
+MBM27C256  21.0   CMOS  8   32K     -     XY    -      -
+MBM27C256A 12.5   CMOS  G,% 32K     -     XY    -      - (SEE NOTE 1)
+MBM27C512  12.5   NMOS  7,5 64K     -     XY    X      - (SEE NOTE 2) 
+NOTE 1:- "G" HERE IS ONLY FOR 7228 V7.11 AND 7956 V2.30 AND LATER!
+        "%" HERE IS ONLY FOR 9000 V5.02 AND LATER
+NOTE 2:- "5" HERE IS ONLY FOR 9000 V5.02 AND LATER
+
+MPU'S:
+8742H      21.0   NMOS  U   2K      XY    -     -      481
+
+HITACHI                               Algorithm
+PART #    VOLTAGE TYPE MENU SIZE   STD.  INT.  QP.   ADAPTER
+EPROMS:
+HN482716G  25.0   NMOS  B    2K     XY    -     -      -
+HN482732G  25.0   NMOS  C    4K     XY    X     X      -
+HN482732AG 21.0   NMOS  D    4K     XY    X     X      -
+HN482764G  21.0   NMOS  E    8K     X     XY    X      -
+HN482764P  21.0   NMOS  E    8K     X     XY    X      -
+HN27C64    21.0   CMOS  O    8K     XY    -     -      -
+HN4827128G 21.0   NMOS  F   16K     X     XY    X      -
+HN4827128P 21.0   NMOS  F   16K     X     XY    X      -
+HN27256G   12.5   NMOS  Z   32K     -     XY    X      -
+
+EEPROMS:
+HN48016P   TTL    NMOS  X   2K      XY    -     -      -
+HN58064P   TTL    NMOS  9   8K      XY    -     -      -
+
+X = AVAILABLE  Y = RECOMMENDED  - = NOT USED
+
+INTEL                                 Algorithm
+PART #    VOLTAGE TYPE MENU SIZE   STD.  INT.  QP.   ADAPTER
+EPROMS:
+2758       25.0   NMOS  A    1K     XY    -     -      -
+2716       25.0   NMOS  B    2K     XY    -     -      -
+2732       25.0   NMOS  C    4K     X     X     XY     -
+2732A      21.0   NMOS  D    4K     X     X     XY     -
+P2732A     21.0   NMOS  D    4K     X     X     XY     -
+2764       21.0   NMOS  E    8K     X     X     XY     -
+2764A      12.5   NMOS  1    8K     -     X     XY     -
+P2764A     12.5   NMOS  1    8K     X     X     XY     -
+27C64      12.5   CMOS  0    8K     -     X     XY     -
+87C64      12.5   CMOS  0    8K     -     X     XY     -
+27128      21.0   NMOS  F   16K     X     X     XY     -
+27128A     12.5   NMOS  2   16K     -     X     XY     -
+27256      12.5   NMOS  Z   32K     -     X     XY     -
+P27256     12.5   NMOS  Z   32K     -     X     XY     -
+27C256     12.5   CMOS  Z   32K     -     X     XY     -
+87C256     12.5   CMOS  Z   32K     -     X     XY     -
+27512      12.5   NMOS  7   64K     -     X     XY     -
+P27512     12.5   NMOS  7   64K     -     X     XY     -
+27513      12.5   NMOS  #   64K     -     X     XY     -
+P27513     12.5   NMOS  #   64K     -     X     XY     -
+27011      12.5   NMOS  =  128K     -     X     XY     -
+27010      12.5   NMOS  =  128K     -     X     XY   110
+27210      12.5   NMOS  =   64K (BY 16BITS)     XY   210
+
+EEPROMS:
+2816A      TTL    NMOS  Y   2K      XY    -     -      -
+2817A      TTL    NMOS  3   2K      XY    -     -      -
+2864       TTL    NMOS  9   8K      XY    -     -      -
+28256      TTL    NMOS   ,4 32K     XY    -     -      - (NOTE 1)
+NOTE 1: SELECTION 4 ONLY ON MODEL 9000
+
+MPU'S:
+8741       25.0   NMOS  R   1K      XY    -     -      481
+8742H      21.0   NMOS  U   2K      XY    -     -      481
+8742AH     12.5   NMOS  !   2K      -     XY    -      483 (NOTE 2)
+8748       25.0   NMOS  R   1K      XY    -     -      481
+8748H      21.0   NMOS  T   1K      XY    -     -      481
+8749H      21.0   NMOS  U   2K      XY    -     -      481
+8751       21.0   NMOS  V   4K      XY    -     -      511
+8751H      21.0   NMOS  V   4K      XY    -     -      511 (NOTE 3)
+87C51      12.5   CMOS  $   4K      -     -     XY     511 (NOTE 4)
+8744H      21.0   NMOS  V   4K      XY    -     -      511 (NOTE 3)
+
+NOTE  2:  Programming  the  security byte on the 8742AH  chip  is 
+accomplished by programming data FFH at location FF1FH. 
+NOTE  3:  Programming the security byte on the 8751 or 8744  chip  
+is accomplished  by programming data 00H at location  FFFFH.  The 
+data  in location FFFh in the 8751 may be anything but  zero,  or 
+else the security byte will not program. 
+NOTE 4:  Programming of the Security bytes is complicated. See new 9000
+manual for programming encryption and different levels of security.
+
+OTHER:
+8755       25.0   NMOS  W   2K      XY    -     -      755
+
+X = AVAILABLE  Y = RECOMMENDED  - = NOT USED
+
+MOTOROLA                              Algorithm
+PART #    VOLTAGE TYPE MENU SIZE   STD.  INT.  QP.   ADAPTER
+EPROMS:
+MCM2716    25.0   NMOS  B   2K      XY    -     -      -
+MCM2532    25.0   NMOS  I   4K      XY    -     -      -
+MCM68732   25.0   NMOS  C   4K      XY    -     -      -
+MCM68764   25.0   NMOS  K   8K      -     XY    -      -
+MCM68766   25.0   NMOS  K   8K      -     XY    -      -
+
+EEPROM:
+MCM2833    TTL    NMOS  9   4K      XY    -     -      -
+MCM2864    TTL    NMOS  9   8K      XY    -     -      -
+
+MPU'S:
+MC68705P3  21.0   NMOS  *   1K      XY    -     -      705
+MC68705R3  21.0   NMOS  *   2K      XY    -     -      705
+MC68705U3  21.0   NMOS  *   2K      XY    -     -      705     
+MC68705P5  21.0   NMOS  *   1K      XY    -     -
+MC68705R5  21.0   NMOS  *   2K      XY    -     -
+MC68705U5  21.0   NMOS  *   2K      XY    -     -
+*CODE TRANSFERRED BY 705 FROM A 2732
+
+NATIONAL                              Algorithm
+PART #    VOLTAGE TYPE MENU SIZE   STD.  INT.  QP.   ADAPTER
+EPROMS:
+MM2758     25.0   NMOS  A   1K      XY    -     -      -
+MM2716     25.0   NMOS  B   2K      XY    -     -      -
+NMC27C16   25.0   CMOS  L   2K      XY    -     -      -
+NMC27C32   25.0   CMOS  M   4K      XY    -     -      -
+NMC27C64   12.5   CMOS  0   8K      -     XY    -      -
+NMC27C256  12.5   CMOS  Z   32K     -     XY    -      -
+
+EEPROM:
+NMC98C64A  TTL    NMOS  9   8K      XY    -     -      -
+
+NEC                                   Algorithm
+PART #    VOLTAGE TYPE MENU SIZE   STD.  INT.  QP.   ADAPTER
+EPROMS:
+uPD2716D   25.0   NMOS  B    2K     XY    -     -      -     
+uPD2732D   25.0   NMOS  C    4K     XY    X     X      -
+uPD2732C   25.0   NMOS  C    4K     X     XY    X      -
+uPD2732AD  21.0   NMOS  D    4K     X     XY    X      -
+uPD2732AC  21.0   NMOS  D    4K     X     XY    X      -
+uPD2764D   21.0   NMOS  E    8K     X     XY    X      -
+uPD2764C   21.0   NMOS  E    8K     X     X     XY     -
+uPD27C64D  21.0   CMOS  O    8K     XY    -     -      -
+uPD27C64C  21.0   CMOS  O    8K     XY    -     -      -
+uPD27128D  21.0   NMOS  F   16K     X     XY    X      -
+uPD27128C  21.0   NMOS  F   16K     X     XY    X      -
+uPD27256D  21.0   NMOS  8,% 32K     -     XY    X      -
+uPD27256C  21.0   NMOS  8,% 32K     -     XY    X      -
+uPD27C256D 21.0   CMOS  8   32K     -     XY    X      -
+uPD27C256C 21.0   CMOS  8   32K     -     XY    X      -
+
+X = AVAILABLE  Y = RECOMMENDED  - = NOT USED
+
+NEC        (CONTINUED)                Algorithm
+PART #    VOLTAGE TYPE MENU SIZE   STD.  INT.  QP.   ADAPTER
+MPU'S:
+8741       25.0   NMOS  R   1K      XY    -     -      481
+8742H      21.0   NMOS  U   2K      XY    -     -      481
+8748       25.0   NMOS  R   1K      XY    -     -      481
+8748H      21.0   NMOS  T   1K      XY    -     -      481
+8749H      21.0   NMOS  U   2K      XY    -     -      481
+
+SEEQ                                  Algorithm
+PART #    VOLTAGE TYPE MENU SIZE   STD.  INT.  QP.   ADAPTER
+EPROMS:
+5133       21.0   NMOS  E   8K      X     XY    X      -
+5133H      21.0   NMOS  E   8K      X     XY    X      -
+5143       21.0   NMOS  F  16K      X     XY    X      -
+27256      12.5   NMOS  Z  32K      -     XY    X      -
+27C256     12.5   NMOS  Z  32K      -     XY    X      -
+
+EEPROM:
+5212       TTL    NMOS  P   1K      XY    -     -      -
+5213       TTL    NMOS  P   2K      XY    -     -      -
+52B13      TTL    NMOS  P   2K      XY    -     -      -
+52B23      TTL    NMOS  9   4K      XY    -     -      -
+52B33      TTL    NMOS  9   8K      XY    -     -      -
+52B13H     TTL    NMOS  P   2K      XY    -     -      -
+52B23H     TTL    NMOS  9   4K      XY    -     -      -
+52B33H     TTL    NMOS  9   8K      XY    -     -      -
+
+SGS                                   Algorithm
+PART #    VOLTAGE TYPE MENU SIZE   STD.  INT.  QP.   ADAPTER
+EPROMS:
+M2716      25.0   NMOS  B   2K      XY    -     -      -
+M2716P     25.0   NMOS  B   2K      XY    -     -      -
+M2732A     21.0   NMOS  D   4K      X     XY    X      -
+M2732AP    21.0   NMOS  D   4K      X     XY    X      -
+M2764      21.0   NMOS  E   8K      X     XY    X      -
+M2764P     21.0   NMOS  E   8K      X     XY    X      -
+M2764A     12.5   NMOS  1   8K      X     XY    X      -
+M2764AP    12.5   NMOS  1   8K      X     XY    X      -
+M27128A    12.5   NMOS  2   16K     X     XY    X      -
+M27256     12.5   NMOS  Z   32K     X     XY    X      -
+M27512     12.5   NMOS  7   64K     X     XY    X      -
+
+SMOS                                 Algorithm
+PART #    VOLTAGE TYPE MENU SIZE   STD.  INT.  QP.   ADAPTER
+EPROMS:
+27C64      21.0   CMOS  O,E 8K      XY    -     -      -
+27128      21.0   NMOS  F   16K     X     XY    X      -
+27C256     12.5   CMOS  Z   32K     -     XY    X      -
+
+EEPROM:
+2864       TTL    NMOS  9   8K      XY    -     -      -
+
+X = AVAILABLE  Y = RECOMMENDED  - = NOT USED
+
+TEXAS INSTRUMENTS                     Algorithm
+PART #    VOLTAGE TYPE MENU SIZE   STD.  INT.  QP.   ADAPTER
+EPROMS:
+TMS2508    25.0   NMOS  G   1K      XY    -     -      -
+TMS2516    25.0   NMOS  H   2K      XY    -     -      -
+TMS2532    25.0   NMOS  I   4K      XY    -     -      -
+TMS2532A   21.0   NMOS  **  4K      -     XY    -      - 
+TMS2732    25.0   NMOS  C   4K      -     XY    X      -
+TMS2732A   21.0   NMOS  D   4K      -     XY    X      -
+TMS27P32A  21.0   NMOS  D   4K      -     XY    X      -
+TMS2564    25.0   NMOS  J   8K      XY    -     -      -
+TMS2764    21.0   NMOS  E   8K      -     XY    X      -
+TMS27P64   21.0   NMOS  E   8K      -     XY    X      -
+TMS27C64   12.5   CMOS  0   8K      -     XY    X      -
+TMS27C128  12.5   CMOS  2   16K     -     XY    -      -
+TMX27PC128 12.5   CMOS  2   16K     -     XY    -      -
+TMS27C256  12.5   CMOS  Z   32K     -     XY    -      -
+TMX27PC256 12.5   CMOS  Z   32K     -     XY    -      -
+TMX27C512  12.5   CMOS  7   64K     -     XY    -      -
+**MENU SELECTION MAY VARY BY PROGRAMMER... + FOR MODEL 9000
+
+TOSHIBA                               Algorithm
+PART #    VOLTAGE TYPE MENU SIZE   STD.  INT.  QP.   ADAPTER
+TMM2764D   21.0   NMOS  E   8K      X     XY    X      -
+TMM2764DI  21.0   NMOS  E   8K      X     XY    X      -
+TMM27128D  21.0   NMOS  F   16K     X     XY    X      -
+TMM27128DI 21.0   NMOS  F   16K     X     XY    X      -
+TMM27256D  21.0   NMOS  8,% 32K     -     XY    -      -
+TMM27256DI 21.0   NMOS  8,% 32K     -     XY    -      -
+TC57256D   21.0   NMOS  8,% 32K     -     XY    -      -
+
+XICOR                                 Algorithm
+PART #    VOLTAGE TYPE MENU SIZE   STD.  INT.  QP.   ADAPTER
+EEPROM:
+X2816A     TTL    NMOS  3   2K      XY    -     -      -
+X2864A     TTL    NMOS  9   8K      XY    -     -      -
+X28C64     TTL    CMOS  9   8K      XY    -     -      -
+X28256     TTL    NMOS   ,4 32K     -     XY    -      - (NOTE 1)
+X28C256    TTL    CMOS   ,4 32K     -     XY    -      - (NOTE 1)
+NOTE 1: AVAILABLE ONLY ON MODEL 9000
+
+PROM / EPROM:
+X2616      12.5   NMOS      2K      XY    -     -      -
+X2664      12.5   NMOS      8K      XY    -     -      -
+
+GTEK   believes  that the information contained in this list   is  
+correct. However, GTEK assumes no responsibility or liability for 
+the accuracy of this list.  

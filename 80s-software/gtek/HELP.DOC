@@ -1,0 +1,72 @@
+Quick selection of commands for GTEK programmers
+L - formatted list command, use start/end addresses for other than full eprom.
+M - gives menu with a cr, or selection with proper letter (me = 2764)
+OI- outputs intel hex file, use start/end addresses for other than full eprom.
+OM- outputs motorola hex file. "           "
+OT- outputs Tektronic hex file. "          "
+P - program ascii hex characters, use start address if not at beginning.
+R - read ascii hex characters, use start/end address if not full eprom.
+T - toggle command:
+    TB- toggle byte... toggle high/low byte when used with split eproms.
+    TC- toggle compare mode.
+    TI- toggle intelligent programming mode.
+    TN- toggle checksum. may use start/end addresses.
+    TR- toggle reset. resets all toggles.
+    TS- toggle split mode. used to program 16 bit split eproms.
+    TZ- toggle zap mode. used to erase some EE proms.
+V - verify blank. use start/end addresses if necessary.
+X - version command. gives version of programmer operating system.
+$ - terminate any programmer operation.
+
+examples of commands:
+L ff    lists contents of eprom in a formatted ascii hex dump from 0-ff hex.
+l0-ff          same results.
+L0000-00ff     same results.
+OI3000-3FFF    output an Intel Hex file from locations 3000 to 3FFF hex in
+               an eprom. You must realize that if you have a 2732 selected
+               for instance, you will actually get the contents of locations
+               0000 through 0fff hex. If you had a 2764 selected, you would
+               actually get the contents of 1000-1fff hex. If you had a 27128
+               selected you would actually get the contents of 3000-3fff hex.
+               The addresses are only significant to the programmer in relation
+               to the eprom size.
+TN(cr)         This causes the programmer to give you a 16 bit checksum
+               (addition of all 8 bit bytes without a 16 bit carry) of the
+               entire eprom selected. An empty 2764 gives a checksum of E000h.
+TN ff          gives the checksum of 0000 through 00ff hex in an eprom.
+P1000 ffff$    programs the eprom selected at locations 1000h and 1001h with
+               the data ff and ff. Programmer returns to the command mode.
+
+If you are not using our interface program, PGX, then the best way to use
+a modem program to capture data is to give the programmer a pending command
+that the next character would be a (cr) for execution. Then give the modem
+program the "capture incoming data" command to open your buffer. When you
+begin communication with the programmer again, send a (cr) to the programmer
+to begin the execution of the pending command. The (cr) will get put into
+the buffer that you opened, but if you are going to send it back to the prog-
+rammer,  it  doesn't  cause any problems.  A (cr) causes the prompter to be
+reissued. You may also edit the file with a word processor like Wordstar in
+the Non-Document mode to remove the extraneous characters from the file. Make
+sure that you don't use any word processor that will change the file to any
+other kind of format. The programmer will promptly start telling you *SN err
+@ 0000 three times then appear to hang up. Any characters from the command
+mode that cause three syntax errors in a row will cause the programmer to go
+looking for a new baud rate. You must abort sending the file to the programmer
+and then send the programmer about 4 to 6 spaces to cause it to lock on to the
+baud rate again.
+
+Wires necessary in RS-232 cable to communicate with GTEK programmers.
+
+GTEK side (female)                         to      DTE (IBM PC)
+
+EG--1--------(optional but hooked in programmer)----1-EG (earth ground)
+TXD-2-----------------------------------------------3-RXD
+RXD-3-----------------------------------------------2-TXD
+RTS-4---------(possibly optional)-------------------6-DSR (Data Set Ready)
+CTS-5----------------------------------------------20-DTR (Data Terminal Ready)
+DSR-6---------(possibly optional)-------------------4-RTS (Ready To Send)
+SG--7-----------------------------------------------7-SG (signal ground)
+DTR-20----------------------------------------------5-CTS (Clear To Send)
+you may also jumper pin 6 DSR to pin 8 CD at both ends. This may 
+be necessary if you use an IBM PC and other types of software.
+

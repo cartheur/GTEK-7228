@@ -1,0 +1,532 @@
+Note:
+
+Remember that since this program can be used with all GTEK programmers,
+you have to take that into consideration when you are looking at the valid
+commands for this PGMX7 program. When using PINSTALL, remember that the 7128
+can only communicate at baud rates up to 1200 and the others at 2400.
+
+Another difference, especially between the model 9000 and the 
+other GTEK programmers is the way that segment records are 
+handled and displayed. On a 7128, 7228 or 7956, you will only see 
+the lower 4 significant nibbles of the "current address" that the 
+programmer thinks it is looking at when programming or reading a 
+file with segment records. Any error messages will have to be 
+massaged to figure the real address the programmer was working 
+on. For example in a file that starts with a segment record of 
+FD00, a *WP ERR @ D000 is really talking about address FD00:0000 
+(FD000 - F0000 = D000). You can't see the Most Significant 
+Nibble, but the programmer is keeping track of it. A model 9000 
+will display that 5th nibble, whereas 7128, 7228 and 7956 can't. 
+Versions of the 7128 can't even keep track of addresses above 
+64K. 
+
+:02000002FD00FF			;segment record
+:2000000000*WP ERR @ D000	;FD000-F0000 = D000
+i27512>_			;returns to command mode
+
+
+YOU CAN ALSO USE THE PGMX SECTION IN YOUR PROGRAMMER MANUAL.
+PGMX IS NOT AVAILABLE FOR THE 7128, 7228, 7956.
+
+                  USING INTERFACE PROGRAM PGMX7
+
+                      INSTALLATION of PGMX7
+
+PGMX7, sold separately, is a high speed communication program 
+which runs on IBM PC's and AT's. It allows flexible manipulation, 
+transmission and reception of Intel HEX files and binary files. 
+
+On the PGMX7 program disk you will have AT LEAST 3 programs: 
+PGMX7.COM, PINSTALL.COM and GHEX.EXE. SEE THE OTHER README FILE ON 
+THE DISK FOR OTHER PROGRAMS. PGMX7 is the program used to 
+communicate with your programmer.  PINSTALL is the program that 
+you must run to install the serial drivers in PGMX7 so that you 
+can communicate with the programmer.
+
+If you try to run the PGMX7 program without installing the serial 
+drivers, it will tell you to run the PINSTALL program. Remember 
+that the PGMX7 license is a single user license. If you buy the 
+programmer now and later on wish to purchase the software, be 
+sure to have the CORRECT serial number ready.  
+
+Insert GTEK program disk in drive A: and copy the programs to 
+your hard disk with:
+
+C>COPY A:*.* 
+
+This will copy all the programs on the GTEK disk over to the 
+subdirectory that you are logged on to on your hard disk.  If you 
+don't have a hard disk, use DISKCOPY or COPY to the B: drive. 
+Refer to the DOS manual for specific instructions on using the 
+COPY command.  The desired end result is a backing up of the 
+original GTEK copy. Store the original program disk in a safe 
+place.
+
+Now you should insert the backup copy in the drive A: and/or go 
+to the subdirectory where PINSTALL and PGMX7 are located.  You 
+must first run the PINSTALL program to install the serial drivers 
+for PGMX7.  
+
+C>PINSTALL<cr>
+Serial Driver Installation Program Version 9.05
+Copyright 1986, 1987  GTEK, INC.
+All Rights Reserved,  worldwide.
+
+
+Enter name of program to be installed -->PGMX7<cr>
+
+IBM PC/AT or compatible COM1 (IRQ4)
+A - 57600 bps (AT only)
+B - 28800 bps (AT only)
+C - 19200 bps
+D - 9600 bps
+E - 2400 bps
+F - 1200 bps
+G - 300 bps
+
+IBM PC/AT or compatible COM2 (IRQ3)
+H - 57600 bps (AT only)
+I - 28800 bps (AT only)
+J - 19200 bps
+K - 9600 bps
+L - 2400 bps
+M - 1200 bps
+N - 300 bps
+
+Z - no changes
+
+
+Enter selection -->L
+Select LPT# (1,2,3 or return for lpt1:) -->1
+
+
+Do you have a GTEK Super Serial Card on COM2:  (Y/N)? - Y
+
+OK! What port do you want the programmer on (0-7) ? -->2
+
+After the copyright and version number appears, you are asked to 
+select a letter which corresponds to the type of installation you 
+wish to perform.
+
+Most people will probably select the "E" selection which would 
+result in PGMX7 being set up to communicate at 2400 BAUD on 
+computer serial port COM1:.  The "L" selection would result in 
+the same thing except COM2: would be the serial port selected. 
+Press return for lpt1:. If you have a GTEK PCSS-8 SS card in your 
+computer you can then install the software to handle selecting 
+the correct port when PGMX7 is run. If you answer N to SS card 
+then you are returned to DOS.
+
+NOTE: YOU SHOULD NOT MAKE ANY SELECTION THAT IS OUT OF THE BAUD 
+RATE RANGE FOR YOUR PROGRAMMER, WHICH IS 1200 FOR THE 7128, AND 
+2400 FOR THE 7228 AND 7956. YOU CAN'T MAKE THEM COMMUNICATE 
+FASTER THAN THEY WERE INTENDED TO RUN.
+
+IRQ4 is used in conjunction with an interrupt service routine for 
+COM1: when PGMX7 is invoked if you installed it for COM1:. This is 
+a hardware line on your PC to give the system an interrupt when
+ever a character is received. If you know that something else in 
+your computer is using this hardware interrupt line, then you 
+should use the other com line, which uses IRQ3 (COM2:).
+
+IRQ3 is also used in the same manner for COM2: when PGMX7 is 
+invoked if you installed it for COM2:.  If you know something in 
+your system uses IRQ3 for interrupts, then you must use the other 
+com port.
+
+See the example for C>PGMX7<cr> later in the manual.
+
+                            OPERATION
+
+PGMX7 is a "command driven program" as opposed to a "MENU driven 
+program" which means that everything you do is done by entering a 
+"command" on the command line instead of "selecting" the command 
+from a menu.  This makes the program very fast when you have 
+learned what the commands are.
+
+In most cases the commands are exactly the same command as what 
+the programmer is expecting, so the selection of the command is 
+somewhat intuitive.
+ 
+There are a 2 ways that commands may be given to PGMX7:
+
+1- From the PC or MS DOS command line.
+2- From within PGMX7.
+
+Commands executed from DOS return to DOS upon completion. 
+Commands executed from within PGMX7 return to PGMX7 upon 
+completion. Command lines may be entered from within PGMX7 by 
+depressing control F.
+
+EXAMPLES:
+
+C>PGMX7<cr>
+
+Enter PGMX7 and establish communication with the programmer 
+(assuming everything is hooked up properly).
+
+C>PGMX7 FILENAME<cr>
+
+Results in communication being established with the programmer 
+and sending FILENAME.HEX (Intel Hex Format) from the disk to the 
+programmer.  When PGMX7 is through, you are returned to the DOS 
+system prompt.
+
+C>PGMX7 FILENAME [OPTIONS]<cr>
+
+Results in PGMX7 establishing communication with the programmer, 
+and then performing according to selected options.
+
+Programming the eprom in binary or Intel Hex format or Reading 
+the eprom in the same formats may be accomplished by giving the 
+proper options. OPTIONS are always enclosed in square brackets 
+and separated by comma's.  Invalid commands result in an 
+appropriate and descriptive ERROR message. 
+ 
+                VALID OPTIONS
+
+R - read file. (default is program mode)
+%xxxx - binary mode select (default is HEX)
+@xxxx-xxxx eprom bounds
+Mx - menu selection
+Tx - toggle command (3 max on command line)
+V - verify erasure
+U - blank check
+
+MORE EXAMPLES
+PGMX7<cr> from the DOS command line establishes communication with 
+the programmer, and after log-on displays the Programmer Command 
+Prompter, which is the currently selected eprom type. 
+
+                     LOG ON MESSAGE EXAMPLE
+
+Medium Speed Eprom Programmer Communications Package Version 9.05
+Copyright 1983, 1984, 1986, 1987  GTEK, INC.
+All Rights Reserved, worldwide.
+I/O Hardware Driver Vers 1.04 - IBM PC/XT/AT
+Serial port  - COM22:,  2400 bps
+Printer port - LPT1:
+ 
+GTEK, INC.
+MODEL 7228 V7.11
+COPYRIGHT 1983, 1986
+xxxx>_
+
+The programmer is ready and waiting for a command at this point.
+
+<iI27128A>TN<cr>
+C000
+<iI27128A>_
+
+Results in the programmer giving you a 16 bit addition of all the 
+8 bit bytes of the part without carry, that is in the socket.  A 
+blank 27128 gives you C000 for the checksum. 
+<iI27128A>(control)
+
+Control-  generally means to press and hold the CONTROL key on 
+your keyboard and press a command letter. Valid command letters 
+are P, F and C. The ESCape key is also a valid control command 
+key, but you do not hold the control key down to press ESC. The 
+ESC key is a valid control character already.  The escape control 
+command may also be obtained by pressing CONTROL [ on the IBM 
+keyboard or by holding down the ALT key and entering 27 on the 
+numeric keypad.  Pressing and holding the CONTROL key is 
+represented by a caret and the letter that must also be pressed, 
+eg. ^C.
+
+The definitions of the CONTROL commands are:
+
+^P -start sending / stop sending (toggle) data simultaneously to 
+    the printer.  
+
+^F -enter a command line.  Examples follow.
+
+^C -Abort most programmer commands and return to the DOS command 
+    prompter or PGMX7. This command will work even though you may be 
+    in the process of programming, reading, verifying, etc.,  an 
+    eprom.
+
+ESC or ^[  -   Escape from program. This command is used as an 
+    alternative to control-alt-del and is not normally used. This is 
+    an EMERGENCY command and the results could be unpredictable.
+  
+                         USING control F
+<2716>^F
+Enter Command line >FILENAME [@0-1FF,V,TN
+
+Results in PGMX7 doing a blank check on the eprom between 0 and 
+1FF inclusive. Then FILENAME.HEX is opened and any hex data 
+falling between the specified boundaries is sent. During data 
+transfer, PGMX7 displays the load addresses of the hex records 
+that it is sending. Finally, the checksum is calculated between 
+the specified addresses and displayed.
+ 
+The options are always set off by an opening square bracket ([) 
+and the ending square bracket (]) is optional. Invalid commands 
+result in an error message and a return to the programmer command 
+prompter.
+
+                           DEFINITIONS
+
+Please note that the listed commands are generally passed on to 
+the programmer unchanged except for the order in which they 
+appear in the command line. PGMX7 will send the commands specified 
+to the programmer in the following order:
+
+1 - menu command
+2 - toggle commands (except TN is done last)
+3 - blank check or verify erasure
+4 - program or read
+5 - checksum (tn)
+
+Some commands, particularly the "R" command, work differently 
+from the programmer command "R".  The "%" and the "@" command are 
+not valid commands for the programmer except on the command line. 
+They are used to give PGMX7 information, not the programmer. You 
+may not specify any command more than once inside the brackets 
+except the toggle commands, and you are allowed a maximum of 3 of 
+those.
+
+ssss = starting address, ascii-hex characters
+eeee = ending address, ascii-hex characters
+oooo = offset amount, ascii-hex characters
+
+Delimiter = a dash (-),  a comma (,),  a space ( ), a carriage 
+return (ascii character number 0dh), or a line feed (ascii 
+character number 0ah). Carriage return and line feed are 
+represented by a <cr> or <lf>.
+
+FILENAME = a valid DOS filename to be used by PGMX7 to look for a 
+file on the disk. In case that a percent (%) sign was specified 
+then the filename specified will be taken literally. In other 
+words you must be explicit and give the extension of the filename 
+also. If the percent sign was not specified then PGMX7 will 
+automatically supply a .HEX extension and look for a .HEX even if 
+you specified an extension.
+
+EXT = a valid DOS extension for the filename in your directory. 
+You are allowed to use any extension you wish here, (in the 
+binary % mode) and the data will be sent to the programmer 
+UNCHANGED.  The EXT will only be valid when you have specified a 
+percent sign (%) within the brackets.
+
+                          AND REMEMBER!
+The effective addressing range of a device is determined by it's 
+size.  If a 2K byte device is being used, then it only has 11 
+significant address lines and only the lowest 11 bits of the 
+address field are significant.  Thus, as far as the 9000 is 
+concerned,  000H is equivalent to 800H or F000H in a 2K device.
+
+                     VALID COMMANDS FOR PGMX7
+
+1- Any valid programmer command except OI, OM, OT, R
+
+2- @ssss-eeee<cr>
+
+An @ symbol followed by the starting address (ssss) followed by a 
+dash (-) followed by the ending address (eeee) will cause the 
+incoming data from the Binary or Intel Hex File to be sent to the 
+specified locations.  In the case of a binary file (specified by 
+a % on the same command line only), the @ symbol means that the 
+data specified by the % sign will go to the ssss-eeee specified 
+by the @ sign within the eprom.  In the case of an Intel Hex file 
+(no %), the @ symbol means that PGMX7 will search the Intel Hex 
+file for data located between the start address (ssss) and the 
+end address (eeee) and send that data to the same locations 
+within the eprom.
+
+3- %oooo 
+
+A percent sign (%) followed by an offset (you may omit specifying 
+an offset of 0, but PGMX7 may warn you that you did not specify 
+it, just in case you forgot) will cause PGMX7 to treat the 
+EXTension you specified literally (and not add a .HEX extension).
+
+EXAMPLES:
+To program 3 2716's from a binary file that contains  1093H 
+bytes:
+
+<xxxx>MB
+<2716>^F
+Enter Command line -->TEST.BIN[%0,@0-7FF<cr>
+
+Causes PGMX7 to look for a file called TEST.BIN on the disk, and 
+when found start sending from relative offset location 0 within 
+TEST.BIN to locations 0 through 7FFh within the eprom. The number 
+of bytes sent is the number of bytes between 0 to 7FFh inclusive. 
+If you don't specify boundaries, you will "Wrap Around" to 
+location 000H at location 800H because you are still sending data 
+to the programmer through PGMX7. 
+
+<2716>^F
+Enter command line -->TEST.BIN[%800,@0-7FF<cr>
+
+Causes PGMX7 to look for a file called TEST.BIN on the disk, and 
+when found start sending from relative offset 800H from within 
+TEST.BIN to locations 0 to 7FFh within the eprom.
+
+<2716>^F
+Enter command line ->TEST.BIN[%1000,@0-7FF<cr>
+
+Causes PGMX7 to look for a file called TEST.BIN on the disk and 
+when found start sending from relative offset 1000H from within 
+the TEST.BIN to locations 0 through 7FFh within the eprom. 
+However, the program will terminate when it encounters the end of 
+the file you are sending from since there are only 94H bytes left 
+in the file TEST.BIN left to send.
+
+Automating the process could be accomplished with a batch file 
+such as this:
+
+TEST.BAT
+ECHO OFF
+PGMX7 test.bin[mb,V,%0,@0-7ff,tn
+ECHO remove eprom, insert new blank
+PAUSE
+PGMX7 test.bin[V,%800,@0-7ff,tn
+ECHO remove eprom, insert new blank
+PAUSE
+PGMX7 test.bin[V,%1000,@0-7ff,tn
+echo now you are done.
+
+Reading an eprom to a disk file is accomplished with the 'R' 
+option.
+
+PGMX7 filename[r<cr>
+         
+Results in reading the selected eprom to the Intel hex disk file, 
+FILENAME.HEX.
+
+PGMX7 filename[r,%
+
+Results in reading the selected eprom to a binary disk file whose 
+name is FILENAME. (no extension was specified.). Note that an 
+offset value included with the % has no meaning during a read 
+operation.
+
+PGMX7 [tn,ma   or ^F[tn,ma from within PGMX7
+
+Results in selecting 2758 (note menu selection has side effect of 
+resetting all toggles) and calculating the checksum.
+
+                        ADVANCED EXAMPLE
+
+PGMX7 filename[m7,ts,v,tn,@20000-3ffff
+
+Results in selecting 27512, split mode, doing a blank check, 
+programming the eprom with hex data residing between the 20 bit 
+addresses of 20000 and 3ffff inclusive, and calculating it's 
+checksum.
+
+This particular file is big. Don't be afraid that PGMX7 has hung 
+up. It has to check the load addresses of every record in the 
+file, and it would take a minute before it reached records at 
+load address 20000, unless the file was created with an "exotic" 
+compiler in such a manner that segment records with apparently 
+random addresses are placed at apparently random locations every 
+few records in the file. No joke intended. 
+
+The boundaries specified cover a 128k range, but the eprom is 
+only 64k. The reason for this is that in the spit mode, the 2 
+eproms are considered as one eprom of twice the size. However, if 
+an error message is issued during programming in the split mode, 
+the address given by the error message is the physical address in 
+the single eprom.
+
+                        USAGE OF GHEX.EXE
+
+GHEX.EXE is a program provided for you to be able to convert a 
+binary file into an INTEL.HEX file.  This capability is built-in 
+to the PGMX7.COM program, but you may want to use it for 
+convenience.
+
+General usage is:
+
+GHEX filename.ext<cr>
+
+OR
+
+GHEX filename.ext offset
+
+Offset is an ASCII-HEX number that specifies where you want your 
+code to begin in the HEX file.
+
+GHEX filetest.bin
+
+Will result in an INTEL.HEX file being created on your disk by 
+the name filetest.hex. The load addresses begin at 0000H since no 
+offset was specified.  GHEX does not destroy the input file.
+
+GHEX filetest.bin AA55
+
+Will result in an INTEL.HEX file being created on your disk by 
+the name filetest.hex, just like before except the load addresses 
+start at the offset address of AA55H in the file. 
+
+                         USING DEBUG.COM
+
+You may use DEBUG.COM (supplied with PC-DOS) in conjunction with 
+our GHEX.EXE to modify an INTEL.HEX file without worrying about 
+the checksums in the INTEL.HEX file. 
+
+The following is a short tutorial to modify a 4K byte INTEL.HEX 
+file with DEBUG. The procedure is to run DEBUG first.
+
+DEBUG<cr>
+-_
+
+From the - prompter within DEBUG use the N command to specify the 
+name of your INTEL.HEX file.
+
+-Nfilename.HEX<cr>
+-_
+
+Use the L command to load the hex file with an offset (if it 
+begins at 0000H). You must do this since if it starts loading at 
+0000H within the segment, it will overwrite your file control 
+block at 5Ch. 
+
+-L 100<cr>
+-_
+
+The CX register now contains the number of bytes read into memory 
+with an offset of 100.  You may have to modify the CX register to 
+properly reflect the correct number bytes you must write back to 
+the disk. Remember that this is going to write from CS:CX when 
+you issue the command.
+
+-RCX<cr>
+CX: 1000<cr>
+-_
+
+Your data is now loaded into the memory of the computer at offset 
+100H. Use the E command to modify the bytes you need to modify. 
+An example of modifying locations starting at 0A55H with data is 
+shown.  Locations A55H through A57H contain FFH.
+
+-EA55 01 02 03<cr>
+-_
+
+Now specify a new file name to write to the disk with since you 
+can't use an extension of HEX with the file you are writing. You 
+want to call it a BIN or IMG file instead since that is what the 
+data really is anyway.
+
+-NNEWFILE.BIN<cr>
+-_
+
+Now you can use the Write command to write the new data to the 
+disk. DEBUG will write an exact image of CS:CX bytes to the disk 
+starting at an offset of 0100H bytes.
+
+-W<cr>
+Writing 1000H bytes
+-_
+
+Now you can use GHEX to make it an INTEL.HEX file or use the 
+BINARY transfer feature of PGMX7 to write the data to the blank 
+eprom.
+
+                           Change.exe
+Change.EXE is a program that can convert Motorola S0-S2 files into the
+INTEL hex format. Run it for instructions.

@@ -1,0 +1,15 @@
+        FIXBIN.EXE filename.ext loadaddress data
+
+        Fixbin allows you to replace data at "loadaddress" with the data
+        specified in "data". The file can be any file, including ascii,
+        but you have to know the load address for your data.
+        eg. fixbin test.bin 12ac 01ff02fe03fd04fc05fb06fa07ee08
+        Opens file test.bin if it exists and seeks byte number 12ac(hex).
+        Replaces what is there with the binary data, 
+        "01ff02fe03fd04fc05fb06fa07ee08". It displays the replaced data
+        as well as the replacing data.
+        The syntax must be specified exactly as above, where the load-
+        address is in ascii-hex and separates the filename and the data
+        with a single space between each. The data is also ascii-hex and
+        may not have a space separating bytes.
+

@@ -1,0 +1,9 @@
+10/18/88 NOTE, some computers disable interrupts when sounding a "bell"
+	character and therefore miss characters on the serial channel
+	during this period of the bell.
+	If you are unlucky enough to have one of these computers , please use
+	PGMX7ANB.COM and PINS7ANB.COM. The bell characters have been
+	changed to astericks,'*'.
+
+
+
