@@ -198,6 +198,7 @@ namespace eval serialPort {
 	# but do not pass LF as a standalone byte.
 	switch -regexp -- $character {
 	    \x0a {}
+	    \x03 -
 	    \x08 -
 	    \x09 -
             \x11 -
@@ -290,7 +291,8 @@ namespace eval smartSend {
     variable waitingForCR false
     variable timerForCR {}
     variable timeOutForCR false
-    variable pauseBetweenChar 0; # milliseconds
+    variable pauseBetweenChar 2; # milliseconds
+    variable pauseBetweenHexLines 20; # milliseconds
 
     proc resetFlags {} {
         variable waitingForCR
@@ -320,6 +322,10 @@ namespace eval smartSend {
         }
         set retries 2000
         while {$waitingForCR && ($retries > 0)} {
+            if {[::sendControl::isAbortRequested]} {
+                resetFlags
+                return -code error "sendLine aborted by user."
+            }
             # puts "sendLine waiting for CR, retries remaining: $retries"
             update
             after 1
@@ -332,7 +338,12 @@ namespace eval smartSend {
         }
         # Send all characters with pauses between and a CR at end.
         foreach character [split $line {}] {
+            if {[::sendControl::isAbortRequested]} {
+                resetFlags
+                return -code error "sendLine aborted by user."
+            }
             serialPort::send $character
+            update
             after $pauseBetweenChar; # pause after each character
         }
         serialPort::send "\r"
@@ -340,6 +351,44 @@ namespace eval smartSend {
         set timerForCR [after 2000 set timeOutForCR true]
     }
 }; # end namespace smartSend
+
+namespace eval sendControl {
+    variable abortRequested false
+    variable active false
+
+    proc begin {} {
+        variable abortRequested
+        variable active
+        set abortRequested false
+        set active true
+    }
+
+    proc finish {} {
+        variable abortRequested
+        variable active
+        set abortRequested false
+        set active false
+    }
+
+    proc isAbortRequested {} {
+        variable abortRequested
+        return $abortRequested
+    }
+
+    proc requestAbort {} {
+        variable abortRequested
+        variable active
+        set abortRequested true
+        serialPort::send "\x03"
+        if {$active} {
+            puts "Abort requested: stopping current send and forwarding Ctrl-C to the 7228."
+        } else {
+            puts "Abort requested: forwarded Ctrl-C to the 7228."
+        }
+        flush stdout
+        return -code break
+    }
+}; # end namespace sendControl
 
 # --------------------------------------------------------------
 # GUI elements
@@ -364,6 +413,7 @@ menu .mb.gtek -tearoff 0
 .mb.gtek add command -label "Send CR" -command { gtekSendCR }
 .mb.gtek add command -label "Send XON" -command { gtekSendXON }
 .mb.gtek add command -label "Send XOFF" -command { gtekSendXOFF }
+.mb.gtek add command -label "Abort Current Send" -command { sendControl::requestAbort }
 .mb.gtek add separator
 .mb.gtek add command -label "Restart Serial Port" -command { serialPort::restart }
 .mb add cascade -label GTEK -menu .mb.gtek
@@ -404,6 +454,9 @@ proc displayHints {} {
 	"\none at a time to the 7228, but the shell will"
 	"\nwait for a carriage-return from the 7228 before"
 	"\nsending the next line."
+	"\nIntel HEX files are sent with pacing between characters"
+	"\nand records. Increase Pause(ms) or HexLine(ms) if you see"
+	"\nDT or ST errors while programming."
 	"\n"
 	"\nImportant for ROM dumps:"
 	"\nThe visible text window trims old lines as it grows."
@@ -417,6 +470,7 @@ proc displayHints {} {
 	"\n"
 	"\nKeyboard short-cuts:"
 	"\nControl-V  send selection to the 7228"
+	"\nControl-C  abort current send and forward Ctrl-C to the 7228"
 	"\nControl-s  save log"
 	"\nControl-f  send file"
 	"\nControl-r  start recording (to file)"
@@ -631,6 +685,9 @@ pack $lab5 $entr5 -side left
 set lab6 [ttk::label .sf.lab6 -text "Pause(ms):"]
 set entr6 [ttk::entry .sf.entr6 -width 6 -textvariable ::smartSend::pauseBetweenChar]
 pack $lab6 $entr6 -side left
+set lab7 [ttk::label .sf.lab7 -text "HexLine(ms):"]
+set entr7 [ttk::entry .sf.entr7 -width 6 -textvariable ::smartSend::pauseBetweenHexLines]
+pack $lab7 $entr7 -side left
 
 set ::serialPort::configWidgets [list $deviceEntry $speedEntry $parityBitsEntry $handShakeEntry]
 
@@ -674,15 +731,27 @@ proc sendFile {} {
 			   -title "Open file to send"]
     if {[string length $::sendFileName] > 0} {
 	set fp [open $::sendFileName "r"]
+        ::sendControl::begin
         set extension [string tolower [file extension $::sendFileName]]
         if {$extension in {".hex" ".ihx"}} {
             while {[gets $fp line] >= 0} {
+                if {[::sendControl::isAbortRequested]} {
+                    break
+                }
                 foreach character [split $line {}] {
+                    if {[::sendControl::isAbortRequested]} {
+                        break
+                    }
                     serialPort::send $character
+                    update
                     after $::smartSend::pauseBetweenChar
                 }
+                if {[::sendControl::isAbortRequested]} {
+                    break
+                }
                 serialPort::send "\r"
-                after $::smartSend::pauseBetweenChar
+                update
+                after $::smartSend::pauseBetweenHexLines
             }
         } else {
 	    while {[gets $fp line] >= 0} {
@@ -693,6 +762,7 @@ proc sendFile {} {
             }
         }
 	close $fp
+        ::sendControl::finish
     }
 }; # end sendFile
 
@@ -738,6 +808,7 @@ bind $logText::textWidget <Any-Key> [list sendTextChar %A]
 event add <<PasteSelection>> <Control-V>
 
 event add <<SendFile>> <Control-F> <Control-f>
+event add <<AbortSend>> <Control-C> <Control-c>
 event add <<SaveLogText>> <Control-S> <Control-s>
 event add <<StartRecording>> <Control-R> <Control-r>
 event add <<StopRecording>> <Control-Q> <Control-q>
@@ -745,6 +816,7 @@ event add <<Exit>> <Control-X> <Control-x>
 event add <<EraseLine>> <Control-U> <Control-u>
 bind $logText::textWidget <<PasteSelection>> { sendSelection [selection get] }
 bind $logText::textWidget <<SendFile>> { sendFile }
+bind $logText::textWidget <<AbortSend>> { sendControl::requestAbort }
 bind $logText::textWidget <<SaveLogText>> { logText::save }
 bind $logText::textWidget <<StartRecording>> { serialPort::startRecording }
 bind $logText::textWidget <<StopRecording>> { serialPort::stopRecording }
@@ -753,6 +825,7 @@ bind $logText::textWidget <Button-3> { uiContextMenu::popup %W %X %Y }
 
 bind $::entryText <Return> { sendTextBuffer }
 bind $::entryText <<SendFile>> { sendFile }
+bind $::entryText <<AbortSend>> { sendControl::requestAbort }
 bind $::entryText <<StartRecording>> { serialPort::startRecording }
 bind $::entryText <<StopRecording>> { serialPort::stopRecording }
 bind $::entryText <<Exit>> { displayExitDialog }
