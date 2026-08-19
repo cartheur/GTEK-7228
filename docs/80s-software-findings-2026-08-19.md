@@ -53,7 +53,17 @@ It also lists:
 
 This is a strong reminder that the original hardware flow-control expectations are built around the programmer's `CTS` input and `DTR` output, not the simpler modern assumption that `rtscts` on a host OS is automatically the exact same thing.
 
-### 5. Repeated syntax errors can kick the programmer into baud recovery
+### 5. The original DOS host software also waits on CTS before sending
+
+A light inspection of `PGMX7.COM` and `PGMX7A.COM` adds one useful software-era clue:
+
+- the binaries contain the literal message `Hardware error - Cant send. CTS low. ESCAPE to abort.`
+- they also log `Sending record at address` and `Reading record at address`
+- `PGMX7.COM` identifies its configured serial path as `2400 bps`
+
+That does not prove the exact byte-for-byte transport algorithm used by the original host, but it does confirm that the shipping DOS-side tooling treated `CTS` as a hard gate on transmit, not as an optional status bit.
+
+### 6. Repeated syntax errors can kick the programmer into baud recovery
 
 From `README.DOC`:
 
@@ -68,6 +78,7 @@ As of Wednesday, August 19, 2026, the strongest repo-supported interpretation is
 
 - the `7228` can program single Intel HEX records correctly on the modern Debian path
 - continued multi-record Intel HEX sessions are still not behaving like the original software/manual path expects
+- the original host software expected a real `CTS`-gated send path, while our present Linux/Tcl path only approximates that behavior
 - generic host `rtscts` should be treated as an approximation, not a proven implementation of the original `7228` flow-control model
 
 ## Practical Takeaway
@@ -76,6 +87,7 @@ The original software bundle is worth keeping because it preserves:
 
 - period-correct cable expectations
 - the intended baud-rate envelope
+- the fact that the original DOS-side sender explicitly checked `CTS` before transmit
 - the warning that `PGMX7` is not the right mental model for the `7228`
 - the clue that bad command sequences can kick the unit into baud-recovery behavior
 
