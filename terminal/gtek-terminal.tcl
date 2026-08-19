@@ -420,7 +420,10 @@ menu .mb.gtek -tearoff 0
 .mb add cascade -label GTEK -menu .mb.gtek
 menu .mb.help -tearoff 0
 .mb.help add command -label "About..." -command { displayAboutMessage }
+.mb.help add command -label "Command options" -command { displayCommandOptions }
 .mb.help add command -label "Hints" -command { displayHints }
+.mb.help add command -label "Keyboard shortcuts" -command { displayKeyboardShortcuts }
+.mb.help add command -label "ROM burning" -command { displayRomBurning }
 .mb add cascade -label Help -menu .mb.help
 
 proc displayExitDialog {} {
@@ -438,12 +441,13 @@ proc displayAboutMessage {} {
 
 proc displayHints {} {
     set message {
+    "\nBasic operational guidelines:"
 	"\n----------------------------------------------------------"
 	"\nType directly into the text window.  Characters will go to"
 	"\nthe GTEK 7228, one at a time.  Incoming characters"
 	"\nfrom the 7228 will appear in the text window."
 	"\n"
-	"\nNote for the current Model 7228 V7.07 unit:"
+	"\nNote for the current Model 7228 v7.07 unit:"
 	"\nstart at 2400 8N1 with RTS/CTS after cold power-up"
 	"\nwhen the optional handshake wires are connected."
 	"\n"
@@ -456,21 +460,37 @@ proc displayHints {} {
 	"\none at a time to the 7228, but the shell will"
 	"\nwait for a carriage-return from the 7228 before"
 	"\nsending the next line."
-	"\nIntel HEX files are sent with pacing between characters"
-	"\nand records. Increase Pause(ms) or HexLine(ms) if you see"
-	"\nDT or ST errors while programming."
+	"\n----------------------------------------------------------"
 	"\n"
-	"\nImportant for ROM dumps:"
-	"\nThe visible text window trims old lines as it grows."
-	"\nFor a full OI dump, clear the log, start recording,"
-	"\nrun the dump, then stop recording."
-	"\nDo not rely on Save Log alone for a full ROM capture."
+    }
+    foreach line $message { logText::add $line }
+    logText::showTail
+}
+
+proc displayCommandOptions {} {
+    set message {
+	"\nGTEK 7228 command options:"
+	"\n-------------------------------------"
+	"\nM = device selection menu"
+	"\nX = identify/version"
+	"\nV = verify erasure / blank check"
+	"\nTN = checksum of the selected device"
+	"\nR = raw ASCII hex read"
+	"\nOI = Intel HEX output read"
+	"\nOM = Motorola S-record output"
+	"\nOT = Tektronix HEX output"
+	"\nL = formatted listing"
+	"\nP = block program in ASCII hex"
 	"\n"
-	"\nPasting a selection of text works in a similar way to"
-	"\nsending a file.  You should be able to paste large sections"
-	"\nof text without overruns."
-	"\n"
+    }
+    foreach line $message { logText::add $line }
+    logText::showTail
+}
+
+proc displayKeyboardShortcuts {} {
+    set message {
 	"\nKeyboard short-cuts:"
+	"\n-------------------------------------"
 	"\nControl-V  send selection to the 7228"
 	"\nControl-C  abort current send and forward Ctrl-C to the 7228"
 	"\nControl-s  save log"
@@ -488,7 +508,29 @@ proc displayHints {} {
 	"\nSend Ctrl-C send ETX directly to the 7228"
 	"\nSend XON    control-Q"
 	"\nSend XOFF   control-S"
-	"\n----------------------------------------------------------"
+	"\n"
+    }
+    foreach line $message { logText::add $line }
+    logText::showTail
+}
+
+proc displayRomBurning {} {
+    set message {
+	"\nROM burning:"
+	"\n-------------------------------------"
+	"\nIntel HEX files are sent with pacing between characters"
+	"\nand records. Increase Pause(ms) or HexLine(ms) if you see"
+	"\nDT or ST errors while programming."
+	"\n"
+	"\nImportant for ROM dumps:"
+	"\nThe visible text window trims old lines as it grows."
+	"\nFor a full OI dump, clear the log, start recording,"
+	"\nrun the dump, then stop recording."
+	"\nDo not rely on Save Log alone for a full ROM capture."
+	"\n"
+	"\nPasting a selection of text works in a similar way to"
+	"\nsending a file.  You should be able to paste large sections"
+	"\nof text without overruns."
 	"\n"
     }
     foreach line $message { logText::add $line }
