@@ -11,7 +11,13 @@ Contains exactly one Intel HEX data record:
 
 Use this file to answer one narrow question:
 
-- can the current serial path program one Intel HEX record cleanly before any second record is introduced?
+- can the current serial path get through one Intel HEX record cleanly before the 7228 faults?
+
+Observed result on Wednesday, August 19, 2026:
+
+- this one-line file still produced `*DT ERR @ 0010` on the `MODEL 7228 V7.07` under test
+- that means the problem is not limited to a second Intel HEX record or to the EOF record
+- the `P` path is already unstable within a single 16-byte data record
 
 Expected follow-up on the programmer:
 
@@ -43,7 +49,7 @@ Contains:
 
 Use this file to answer the next question:
 
-- can the current serial path handle a controlled two-record Intel HEX transfer when the file ends cleanly with EOF?
+- once single-record `P`-mode pacing is understood, can the current serial path handle a controlled two-record Intel HEX transfer when the file ends cleanly with EOF?
 
 Expected follow-up on the programmer:
 
@@ -80,7 +86,7 @@ Contains exactly one Intel HEX data record:
 - address `0x0010`
 - bytes `F0` through `FF`
 
-Use this after a successful first-record test to answer:
+Use this only after a clean first-record `P`-mode test to answer:
 
 - can the current serial path program the second record when it is sent as its own file action?
 
@@ -89,6 +95,9 @@ Use this after a successful first-record test to answer:
 Contains only the Intel HEX EOF record.
 
 Use this after separate one-record file sends to close the Intel HEX session cleanly.
+
+Do not assume the EOF record is the source of `*DT ERR @ 0010`.
+The August 19, 2026 single-record test showed that the fault can happen before any EOF record is sent.
 
 ## Dedicated sender script
 
@@ -133,4 +142,6 @@ This helper:
 - then re-selects the target device with `MF`
 - sends the next Intel HEX file
 
-Use it when continued multi-record Intel HEX sessions fail, but individual records are known to program correctly.
+Use it when continued multi-record Intel HEX sessions fail.
+
+As of Wednesday, August 19, 2026, the stronger bench conclusion is that even single-record Intel HEX `P` transfers are still pacing-sensitive on this `MODEL 7228 V7.07` unit.

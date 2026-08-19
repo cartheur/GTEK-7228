@@ -166,6 +166,7 @@ namespace eval serialPort {
 	    return
 	}
         set receiveCount [expr {$receiveCount + [string length $incomingText]}]
+        ::sendControl::recordIncomingText $incomingText
         if { [string length $recordingFile] > 0 } {
             puts -nonewline $recordingFile $incomingText
             flush $recordingFile
@@ -365,6 +366,53 @@ namespace eval smartSend {
 namespace eval sendControl {
     variable abortRequested false
     variable active false
+    variable hexRecentText {}
+    variable hexLastReceiveMs 0
+    variable hexSawPrompt false
+    variable hexSawError false
+    variable hexErrorText {}
+
+    proc resetHexMonitor {} {
+        variable hexRecentText
+        variable hexLastReceiveMs
+        variable hexSawPrompt
+        variable hexSawError
+        variable hexErrorText
+        set hexRecentText {}
+        set hexLastReceiveMs 0
+        set hexSawPrompt false
+        set hexSawError false
+        set hexErrorText {}
+    }
+
+    proc recordIncomingText {incomingText} {
+        variable hexRecentText
+        variable hexLastReceiveMs
+        variable hexSawPrompt
+        variable hexSawError
+        variable hexErrorText
+        if {[string length $incomingText] == 0} {
+            return
+        }
+        set hexLastReceiveMs [clock milliseconds]
+        append hexRecentText $incomingText
+        if {[string length $hexRecentText] > 512} {
+            set hexRecentText [string range $hexRecentText end-511 end]
+        }
+        if {[string first ">" $incomingText] >= 0} {
+            set hexSawPrompt true
+        }
+        if {!$hexSawError} {
+            set upperRecent [string toupper $hexRecentText]
+            if {[regexp {\*[A-Z ]+ERR[^\r\n]*} $upperRecent match]} {
+                set hexSawError true
+                set hexErrorText $match
+            } elseif {[string first "*" $incomingText] >= 0} {
+                set hexSawError true
+                set hexErrorText [string trim $hexRecentText]
+            }
+        }
+    }
 
     proc waitForReceiveCount {targetCount {timeoutMs 4000}} {
         set deadline [expr {[clock milliseconds] + $timeoutMs}]
@@ -380,11 +428,41 @@ namespace eval sendControl {
         }
     }
 
+    proc waitForHexOutcome {{timeoutMs 4000} {idleMs 200}} {
+        variable hexLastReceiveMs
+        variable hexSawPrompt
+        variable hexSawError
+        variable hexErrorText
+        set startMs [clock milliseconds]
+        set deadline [expr {$startMs + $timeoutMs}]
+        while {[clock milliseconds] < $deadline} {
+            if {[isAbortRequested]} {
+                return -code error "wait aborted by user."
+            }
+            if {$hexSawError} {
+                if {[string length $hexErrorText] == 0} {
+                    return -code error "device reported an error."
+                }
+                return -code error $hexErrorText
+            }
+            if {$hexSawPrompt} {
+                return prompt
+            }
+            if {$hexLastReceiveMs > 0 && ([clock milliseconds] - $hexLastReceiveMs) >= $idleMs} {
+                return idle
+            }
+            update
+            after 1
+        }
+        return -code error "timed out waiting for Intel HEX record outcome."
+    }
+
     proc begin {} {
         variable abortRequested
         variable active
         set abortRequested false
         set active true
+        resetHexMonitor
     }
 
     proc finish {} {
@@ -392,6 +470,7 @@ namespace eval sendControl {
         variable active
         set abortRequested false
         set active false
+        resetHexMonitor
     }
 
     proc isAbortRequested {} {
@@ -541,6 +620,9 @@ proc displayRomBurning {} {
 	"\nROM burning:"
 	"\n-------------------------------------"
 	"\nIntel HEX files are sent with pacing between characters and records. Increase Pause(ms) or HexLine(ms) if you see DT or ST errors while programming."
+	"\nThe Tcl sender now watches for 7228 error replies and prompt return,"
+	"\nnot a byte-for-byte echo match, because the manual says echoed data"
+	"\nonly reflects FIFO drain and not actual programming success."
 	"\n"
 	"\nImportant for ROM dumps:"
     "\n"
@@ -907,7 +989,7 @@ proc sendFile {} {
                 if {[::sendControl::isAbortRequested]} {
                     break
                 }
-                set expectedEchoCount [expr {[::serialPort::getReceiveCount] + [string length $line]}]
+                ::sendControl::resetHexMonitor
                 foreach character [split $line {}] {
                     if {[::sendControl::isAbortRequested]} {
                         break
@@ -921,7 +1003,7 @@ proc sendFile {} {
                 }
                 serialPort::send "\r"
                 update
-                if [catch {::sendControl::waitForReceiveCount $expectedEchoCount} result] {
+                if [catch {::sendControl::waitForHexOutcome 4000 $::smartSend::pauseBetweenHexLines} result] {
                     puts "hex send failed: $result"
                     break
                 }

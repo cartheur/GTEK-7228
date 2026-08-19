@@ -13,19 +13,19 @@ The current project goal is:
   - power up
   - communicate over serial
   - read EPROM contents
-  - program at least single Intel HEX records correctly
 
 ## What Is Still Blocking Final Completion
 
 The remaining blocker is not the `ASSIST09` image itself.
 
-The remaining blocker is the modern host-to-`7228` transport path for continued multi-record Intel HEX programming.
+The remaining blocker is the modern host-to-`7228` transport path for Intel HEX programming in `P` mode.
 
 As of Wednesday, August 19, 2026:
 
-- one-record Intel HEX programming is confirmed working
-- readback of those programmed records is confirmed working
-- continued multi-record Intel HEX sessions are still not behaving cleanly enough to trust a full `ASSIST09` burn
+- raw serial interactivity is confirmed working
+- readback commands are confirmed working
+- a stricter one-line single-record Intel HEX `P` test still fails with `*DT ERR @ 0010`
+- the blocker is therefore narrower and uglier than first thought: the `P` transfer path itself is not yet trustworthy enough for a full `ASSIST09` burn
 
 ## Practical Interpretation
 
