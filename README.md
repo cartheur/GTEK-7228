@@ -23,6 +23,8 @@ For first-time diagnosis and serial bring-up on a modern Debian machine, start w
 
 For the first successful power-supply recovery measurements, including the fuse replacement, transformer readings, and variac notes from August 18, 2026, see [docs/power-diagnostics-2026-08-18.md](docs/power-diagnostics-2026-08-18.md).
 
+For the first confirmed successful serial boot to the `xxxx>` prompt and `EPROM SELECTION MENU` on August 19, 2026, including the note that the current working cable uses only three wires and leaves the two optional handshake wires unused for now, see [docs/milestone-2026-08-19-first-boot-menu.md](docs/milestone-2026-08-19-first-boot-menu.md).
+
 For a future stable interactive serial interface on Debian, there is also a Tcl/Tk terminal at `terminal/gtek-terminal.tcl` with EM1016-friendly defaults.
 
 If you need to fabricate the physical link first, use [docs/cable-build.md](docs/cable-build.md) for the EM1016-first cable path and exact first-pass pinout.
