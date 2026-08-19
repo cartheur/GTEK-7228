@@ -103,7 +103,7 @@ namespace eval cmdHistory {
 # Sending and receiving characters.
 
 namespace eval serialPort {
-    variable baudRate 19200
+    variable baudRate 2400
     variable parity "n"; # n=none e=even o=odd m=mark s=space
     variable dataBits 8; # 7 8
     variable stopBits 1; # 1 2
@@ -392,6 +392,9 @@ proc displayHints {} {
 	"\nthe GTEK 7228, one at a time.  Incoming characters"
 	"\nfrom the 7228 will appear in the text window."
 	"\n"
+	"\nBench note for the current Model 7228 V7.07 unit:"
+	"\nstart at 2400 8N1 with XON/XOFF after cold power-up."
+	"\n"
 	"\nAlternatively, type into the command-line widget and press"
 	"\nEnter to send the full line with a trailing carriage-return."
 	"\nThis interactive path sends immediately and does not wait"
@@ -401,6 +404,12 @@ proc displayHints {} {
 	"\none at a time to the 7228, but the shell will"
 	"\nwait for a carriage-return from the 7228 before"
 	"\nsending the next line."
+	"\n"
+	"\nImportant for ROM dumps:"
+	"\nThe visible text window trims old lines as it grows."
+	"\nFor a full OI dump, clear the log, start recording,"
+	"\nrun the dump, then stop recording."
+	"\nDo not rely on Save Log alone for a full ROM capture."
 	"\n"
 	"\nPasting a selection of text works in a similar way to"
 	"\nsending a file.  You should be able to paste large sections"
@@ -606,7 +615,7 @@ pack $lab1 $deviceEntry -side left
 set lab2 [ttk::label .sf.lab2 -text "Speed:"]
 set speedEntry [ttk::combobox .sf.entr2 -width 8 \
                     -textvariable ::serialPort::baudRate \
-                    -values [list 300 1200 2400 4800 9600 19200]]
+                    -values [list 2400 4800 9600 19200]]
 pack $lab2 $speedEntry -side left
 set lab3 [ttk::label .sf.lab3 -text "ParityAndBits:"]
 set parityBitsEntry [ttk::entry .sf.entr3 -width 6 -textvariable ::serialPort::parityAndBits]
