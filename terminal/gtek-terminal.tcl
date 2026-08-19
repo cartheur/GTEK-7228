@@ -415,8 +415,8 @@ menu .mb.gtek -tearoff 0
 .mb.gtek add command -label "Restart Serial Port" -command { serialPort::restart }
 .mb add cascade -label Device -menu .mb.gtek
 menu .mb.window -tearoff 0
-.mb.window add command -label "Clear Log" -command { logText::clear }
-.mb.window add command -label "Save Log..." -command { logText::save }
+.mb.window add command -label "Clear" -command { logText::clear }
+.mb.window add command -label "Save..." -command { logText::save }
 .mb add cascade -label Window -menu .mb.window
 menu .mb.help -tearoff 0
 .mb.help add command -label "About..." -command { displayAboutMessage }
@@ -443,23 +443,13 @@ proc displayHints {} {
     set message {
     "\nBasic operational guidelines:"
 	"\n----------------------------------------------------------"
-	"\nType directly into the text window.  Characters will go to"
-	"\nthe GTEK 7228, one at a time.  Incoming characters"
-	"\nfrom the 7228 will appear in the text window."
+	"\nType directly into the text window.  Characters will go to the device one at a time.  Incoming characters from the device will appear in the text window."
 	"\n"
-	"\nNote for the current Model 7228 v7.07 unit:"
-	"\nstart at 2400 8N1 with RTS/CTS after cold power-up"
-	"\nwhen the optional handshake wires are connected."
+	"\nFor the GTEK Model 7228 v7.07 unit start at 2400 8N1 with RTS/CTS after cold power-up when the optional handshake wires are connected. This is set by default."
 	"\n"
-	"\nAlternatively, type into the command-line widget and press"
-	"\nEnter to send the full line with a trailing carriage-return."
-	"\nThis interactive path sends immediately and does not wait"
-	"\nfor a returned carriage-return from the 7228."
+	"\nAlternatively, type into the command-line and press 'Enter' to send the full line with a trailing carriage-return. This interactive path sends immediately and does not wait for a returned carriage-return from the device."
 	"\n"
-	"\nSending a file: For every line of the file, characters go"
-	"\none at a time to the 7228, but the shell will"
-	"\nwait for a carriage-return from the 7228 before"
-	"\nsending the next line."
+	"\nWhen sending a file to program a ROM, for every line of the file, characters go none at a time to the device, but the shell will await for a carriage-return from the device before sending the next line."
 	"\n----------------------------------------------------------"
 	"\n"
     }
@@ -503,6 +493,7 @@ proc displayKeyboardShortcuts {} {
 	"\nControl-u  clear command buffer"
 	"\n"
 	"\nMenu actions under GTEK:"
+    "\n"
 	"\nSend Space  useful for provoking or refreshing a prompt"
 	"\nSend CR     send carriage-return only"
 	"\nSend Ctrl-C send ETX directly to the 7228"
@@ -518,19 +509,13 @@ proc displayRomBurning {} {
     set message {
 	"\nROM burning:"
 	"\n-------------------------------------"
-	"\nIntel HEX files are sent with pacing between characters"
-	"\nand records. Increase Pause(ms) or HexLine(ms) if you see"
-	"\nDT or ST errors while programming."
+	"\nIntel HEX files are sent with pacing between characters and records. Increase Pause(ms) or HexLine(ms) if you see DT or ST errors while programming."
 	"\n"
 	"\nImportant for ROM dumps:"
-	"\nThe visible text window trims old lines as it grows."
-	"\nFor a full OI dump, clear the log, start recording,"
-	"\nrun the dump, then stop recording."
-	"\nDo not rely on Save Log alone for a full ROM capture."
+    "\n"
+	"\nThe visible text window trims old lines as it grows. For a full OI dump, clear the log, start recording, run the dump, then stop recording. Do not rely on Save Log alone for a full ROM capture."
 	"\n"
-	"\nPasting a selection of text works in a similar way to"
-	"\nsending a file.  You should be able to paste large sections"
-	"\nof text without overruns."
+	"\nPasting a selection of text works in a similar way to sending a file.  You should be able to paste large sections of text without overruns."
 	"\n"
     }
     foreach line $message { logText::add $line }
@@ -550,9 +535,9 @@ namespace eval logText {
     variable charCount 0
     variable saveFileName {}
     
-    set textFrame [ttk::labelframe .tf -text " Response from GTEK 7228 "]
+    set textFrame [ttk::labelframe .tf -text " Response from the device "]
     set textWidget [text .tf.t -height $textHeight -width $textWidth \
-                        -font $textFont -wrap char \
+                        -font $textFont -wrap word \
                         -yscrollcommand [list $textFrame.vsb set] ]
     set textScrollBar [ttk::scrollbar .tf.vsb -orient vertical \
                            -command [list $textWidget yview] ]
@@ -797,7 +782,7 @@ namespace eval uiContextMenu {
 set ::uiContextMenu::menuWidget .logContextMenu
 
 # Entry for collecting the outgoing text.
-set entryFrame [ttk::labelframe .ef -text " Command to GTEK 7228 "]
+set entryFrame [ttk::labelframe .ef -text " Command to send "]
 set ::entryText [ttk::entry .ef.et -textvariable ::textBuffer -width $::logText::textWidth]
 pack $::entryText -side left -fill x -expand 1
 
