@@ -405,12 +405,12 @@ menu .mb.file -tearoff 0
 .mb.file add command -label "Exit" -command { displayExitDialog }
 .mb add cascade -label File -menu .mb.file
 menu .mb.gtek -tearoff 0
-.mb.gtek add command -label "Send Space" -command { gtekSendSpace }
-.mb.gtek add command -label "Send CR" -command { gtekSendCR }
-.mb.gtek add command -label "Send Ctrl-C" -command { gtekSendCtrlC }
-.mb.gtek add command -label "Send XON" -command { gtekSendXON }
-.mb.gtek add command -label "Send XOFF" -command { gtekSendXOFF }
-.mb.gtek add command -label "Abort Current Send" -command { sendControl::requestAbort }
+.mb.gtek add command -label "Send Space (<space>)" -command { gtekSendSpace }
+.mb.gtek add command -label "Send CR (\\r, 0x0D)" -command { gtekSendCR }
+.mb.gtek add command -label "Send Ctrl-C (0x03)" -command { gtekSendCtrlC }
+.mb.gtek add command -label "Send XON (0x11)" -command { gtekSendXON }
+.mb.gtek add command -label "Send XOFF (0x13)" -command { gtekSendXOFF }
+.mb.gtek add command -label "Abort Current Send (Ctrl-C)" -command { sendControl::requestAbort }
 .mb.gtek add separator
 .mb.gtek add command -label "Restart Serial Port" -command { serialPort::restart }
 .mb add cascade -label Device -menu .mb.gtek
@@ -663,7 +663,85 @@ namespace eval uiTooltip {
         set y [expr {[winfo rooty $widget] + [winfo height $widget] + 6}]
         wm geometry $tipWindow +$x+$y
     }
+
+    proc showAtPointer {text} {
+        variable tipWindow
+        variable afterId
+        hide
+        if {[string length $text] == 0} {
+            return
+        }
+        set afterId [after 150 [list ::uiTooltip::renderAtPointer $text]]
+    }
+
+    proc renderAtPointer {text} {
+        variable tipWindow
+        variable afterId
+        set afterId ""
+        set tipWindow .deviceTooltip
+        toplevel $tipWindow -bd 1 -relief solid
+        wm overrideredirect $tipWindow 1
+        label $tipWindow.label -text $text -justify left -padx 6 -pady 4 \
+            -background lightyellow -foreground black
+        pack $tipWindow.label
+        lassign [winfo pointerxy .] x y
+        wm geometry $tipWindow +[expr {$x + 14}]+[expr {$y + 18}]
+    }
 }; # end namespace uiTooltip
+
+proc deviceMenuTooltipText {label} {
+    switch -- $label {
+        "Send Space" {
+            return "Sends a single space character: <space>"
+        }
+        "Send CR" {
+            return "Sends carriage return to the 7228: \\r (0x0D)"
+        }
+        "Send Ctrl-C" {
+            return "Sends ETX to the 7228: Ctrl-C (0x03)"
+        }
+        "Send XON" {
+            return "Sends XON to the 7228: Ctrl-Q (0x11)"
+        }
+        "Send XOFF" {
+            return "Sends XOFF to the 7228: Ctrl-S (0x13)"
+        }
+        "Abort Current Send" {
+            return "Requests local send abort and also forwards Ctrl-C (0x03)"
+        }
+        "Restart Serial Port" {
+            return "Closes and reopens the serial port; no 7228 command is sent"
+        }
+        default {
+            return ""
+        }
+    }
+}
+
+proc updateDeviceMenuTooltip {menuWidget} {
+    if {![winfo exists $menuWidget]} {
+        return
+    }
+    if {[catch {$menuWidget index active} activeIndex]} {
+        ::uiTooltip::hide
+        return
+    }
+    if {$activeIndex eq "none"} {
+        ::uiTooltip::hide
+        return
+    }
+    if {[$menuWidget type $activeIndex] ne "command"} {
+        ::uiTooltip::hide
+        return
+    }
+    set label [$menuWidget entrycget $activeIndex -label]
+    set text [deviceMenuTooltipText $label]
+    if {[string length $text] == 0} {
+        ::uiTooltip::hide
+    } else {
+        ::uiTooltip::showAtPointer $text
+    }
+}
 
 proc handShakeTooltipText {} {
     switch -- $::serialPort::handShake {
@@ -778,6 +856,14 @@ bind $handShakeEntry <Enter> { uiTooltip::show %W [handShakeTooltipText] }
 bind $handShakeEntry <Leave> { uiTooltip::hide }
 bind $handShakeEntry <FocusOut> { uiTooltip::hide }
 bind $handShakeEntry <ButtonPress> { uiTooltip::hide }
+bind Menu <<MenuSelect>> {
+    if {"%W" eq ".mb.gtek"} {
+        updateDeviceMenuTooltip %W
+    } else {
+        ::uiTooltip::hide
+    }
+}
+bind .mb.gtek <Unmap> { uiTooltip::hide }
 bind $handShakeEntry <<ComboboxSelected>> { uiTooltip::show %W [handShakeTooltipText] }
 
 proc sendTextChar { character } {
